@@ -306,10 +306,30 @@ public class SeamCarver
 	public void removeHorizontalSeam(int[] seam) // remove horizontal seam from
 													// current picture
 	{
+		Picture p = new Picture(pic.width(), pic.height() - 1);
+		for (int x = 0; x < pic.width(); x++)
+		{
+			int pivot = seam[x];
+			for (int y = 0; y < pivot; y++)
+				p.set(x, y, pic.get(x, y));
+			
+			for (int y = pivot + 1; y < pic.height(); y++)
+				p.set(x, y, pic.get(x, y + 1));
+		}
 	}
 
 	public void removeVerticalSeam(int[] seam) // remove vertical seam from
 												// current picture
 	{
+		Picture p = new Picture(pic.width() - 1, pic.height());
+		for (int y = 0; y < pic.height(); y++)
+		{
+			int pivot = seam[y];
+			for (int x = 0; x < pivot; x++)
+				p.set(x, y, pic.get(x, y));
+
+			for (int x = pivot + 1; x < pic.width(); x++)
+				p.set(x, y, pic.get(x + 1, y));
+		}
 	}
 }

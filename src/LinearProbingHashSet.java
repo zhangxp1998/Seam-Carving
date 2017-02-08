@@ -11,14 +11,11 @@
 
 import edu.princeton.cs.algs4.BST;
 import edu.princeton.cs.algs4.BinarySearchST;
-import edu.princeton.cs.algs4.LinearProbingHashST;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RedBlackBST;
 import edu.princeton.cs.algs4.ST;
 import edu.princeton.cs.algs4.SeparateChainingHashST;
 import edu.princeton.cs.algs4.SequentialSearchST;
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
 
 /**
  * The {@code LinearProbingHashST} class represents a symbol table of generic
@@ -280,26 +277,6 @@ public class LinearProbingHashSet<Key>
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Unit tests the {@code LinearProbingHashST} data type.
-	 *
-	 * @param args
-	 *            the command-line arguments
-	 */
-	public static void main(String[] args)
-	{
-		LinearProbingHashST<String, Integer> st = new LinearProbingHashST<String, Integer>();
-		for (int i = 0; !StdIn.isEmpty(); i++)
-		{
-			String key = StdIn.readString();
-			st.put(key, i);
-		}
-
-		// print keys
-		for (String s : st.keys())
-			StdOut.println(s + " " + st.get(s));
 	}
 }
 

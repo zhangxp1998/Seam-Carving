@@ -83,7 +83,7 @@ public class SeamCarver
 					continue outer;
 				}
 			}
-			topologicalOrder.enqueue(cur);
+			topologicalOrder.enqueue(stack.pop());
 		}
 
 		Point first = topologicalOrder.dequeue();

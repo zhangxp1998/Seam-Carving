@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.function.Function;
 
 import edu.princeton.cs.algs4.LinearProbingHashST;
 import edu.princeton.cs.algs4.Picture;
@@ -61,7 +62,7 @@ public class SeamCarver
 		return Math.sqrt(dx + dy);
 	}
 
-	private Queue<Point> horizontalTopSort()
+	private Queue<Point> topologicalSort(Function<Point, Point[]> neighbors)
 	{
 		Queue<Point> topologicalOrder = new Queue<Point>();
 		Stack<Point> stack = new Stack<Point>();
@@ -70,94 +71,101 @@ public class SeamCarver
 		Point start = new Point(-1, -1);
 
 		stack.push(start);
-		while (!stack.isEmpty())
+		outer: while (!stack.isEmpty())
 		{
 			Point cur = stack.peek();
-			if (cur == start)
+			for (Point next : neighbors.apply(cur))
 			{
-				int height = pic.height();
-				for (int i = 0; i < height; i++)
+				if (!visited.contains(next))
 				{
-					Point next = new Point(0, i);
-					if (!visited.contains(next))
-					{
-						stack.push(next);
-						visited.add(next);
-					}
+					stack.push(next);
+					visited.add(next);
+					continue outer;
 				}
-				continue;
 			}
-			Point a = new Point(cur.x + 1, cur.y + 1);
-			Point b = new Point(cur.x + 1, cur.y);
-			Point c = new Point(cur.x + 1, cur.y - 1);
+			topologicalOrder.enqueue(cur);
+		}
 
-			if (isInBound(a) && !visited.contains(a))
+		Point first = topologicalOrder.dequeue();
+		assert first == start;
+
+		return topologicalOrder;
+	}
+
+	private Queue<Point> horizontalTopSort()
+	{
+		return topologicalSort(p ->
+		{
+			if (p.x == -1 || p.y == -1)
 			{
-				stack.push(a);
-				visited.add(a);
-			} else if (isInBound(b) && !visited.contains(b))
-			{
-				stack.push(b);
-				visited.add(b);
-			} else if (isInBound(c) && !visited.contains(c))
-			{
-				stack.push(c);
-				visited.add(c);
+				assert p.x == -1 && p.y == -1;
+
+				Point[] neighbors = new Point[pic.height()];
+				for (int i = 0; i < neighbors.length; i++)
+					neighbors[i] = new Point(0, i);
+
+				return neighbors;
 			} else
 			{
-				topologicalOrder.enqueue(stack.pop());
+				if (p.x >= pic.width() - 1)
+				{
+					return new Point[0];
+				}
+				Queue<Point> q = new Queue<Point>();
+				for (int offset = -1; offset <= 1; offset++)
+				{
+					Point next = new Point(p.x + 1, p.y + offset);
+					if (isInBound(next))
+						q.enqueue(next);
+				}
+
+				Point[] neighbors = new Point[q.size()];
+
+				for (int i = 0; i < neighbors.length; i++)
+					neighbors[i] = q.dequeue();
+
+				assert neighbors.length <= 3;
+				return neighbors;
 			}
-		}
-		return topologicalOrder;
+		});
 	}
 
 	private Queue<Point> verticalTopSort()
 	{
-		Queue<Point> topologicalOrder = new Queue<Point>();
-		Stack<Point> stack = new Stack<Point>();
-		LinearProbingHashSet<Point> visited = new LinearProbingHashSet<Point>();
-
-		Point start = new Point(-1, -1);
-
-		while (!stack.isEmpty())
+		return topologicalSort(p ->
 		{
-			Point cur = stack.peek();
-			if (cur == start)
+			if (p.x == -1 || p.y == -1)
 			{
-				int width = pic.width();
-				for (int i = 0; i < width; i++)
-				{
-					Point next = new Point(i, 0);
-					if (!visited.contains(next))
-					{
-						stack.push(next);
-						visited.add(next);
-					}
-				}
-				continue;
-			}
-			Point a = new Point(cur.x - 1, cur.y + 1);
-			Point b = new Point(cur.x, cur.y + 1);
-			Point c = new Point(cur.x + 1, cur.y + 1);
+				assert p.x == -1 && p.y == -1;
 
-			if (isInBound(a) && !visited.contains(a))
-			{
-				stack.push(a);
-				visited.add(a);
-			} else if (isInBound(b) && !visited.contains(b))
-			{
-				stack.push(b);
-				visited.add(b);
-			} else if (isInBound(c) && !visited.contains(c))
-			{
-				stack.push(c);
-				visited.add(c);
+				Point[] neighbors = new Point[pic.width()];
+				for (int i = 0; i < neighbors.length; i++)
+					neighbors[i] = new Point(i, 0);
+
+				return neighbors;
 			} else
 			{
-				topologicalOrder.enqueue(stack.pop());
+				if (p.x >= pic.height() - 1)
+				{
+					return new Point[0];
+				}
+				Queue<Point> q = new Queue<Point>();
+				for (int offset = -1; offset <= 1; offset++)
+				{
+					Point next = new Point(p.x + offset, p.y + 1);
+					if (isInBound(next))
+						q.enqueue(next);
+				}
+
+				Point[] neighbors = new Point[q.size()];
+
+				for (int i = 0; i < neighbors.length; i++)
+					neighbors[i] = q.dequeue();
+
+				assert neighbors.length <= 3;
+				return neighbors;
 			}
-		}
-		return topologicalOrder;
+		});
 	}
 
 	private void relax(Point cur, Point next, LinearProbingHashST<Point, Double> dist,

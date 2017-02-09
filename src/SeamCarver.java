@@ -59,123 +59,11 @@ public class SeamCarver
 		return Math.sqrt(dx + dy);
 	}
 
-	// private Iterable<Point> topologicalSort(Function<Point, Point[]>
-	// neighbors)
-	// {
-	// Stack<Point> topologicalOrder = new Stack<Point>();
-	// Stack<Point> stack = new Stack<Point>();
-	// LinearProbingHashSet<Point> visited = new LinearProbingHashSet<Point>();
-	//
-	// Point start = new Point(-1, -1);
-	//
-	// stack.push(start);
-	// outer: while (!stack.isEmpty())
-	// {
-	// Point cur = stack.peek();
-	// if (visited.contains(cur))
-	// {
-	// continue;
-	// }
-	// for (Point next : neighbors.apply(cur))
-	// {
-	// if (!visited.contains(next))
-	// {
-	// stack.push(next);
-	// continue outer;
-	// }
-	// }
-	// visited.add(cur);
-	// topologicalOrder.push(stack.pop());
-	// }
-	//
-	// Point first = topologicalOrder.pop();
-	// assert first == start;
-	//
-	// return topologicalOrder;
-	// }
-	//
-	// private Iterable<Point> horizontalTopSort()
-	// {
-	// return topologicalSort(p ->
-	// {
-	// if (p.x == -1 || p.y == -1)
-	// {
-	// assert p.x == -1 && p.y == -1;
-	//
-	// Point[] neighbors = new Point[pic.height()];
-	// for (int i = 0; i < neighbors.length; i++)
-	// neighbors[i] = new Point(0, i);
-	//
-	// return neighbors;
-	// } else
-	// {
-	// if (p.x >= pic.width() - 1)
-	// {
-	// return new Point[0];
-	// }
-	// Queue<Point> q = new Queue<Point>();
-	// for (int offset = -1; offset <= 1; offset++)
-	// {
-	// Point next = new Point(p.x + 1, p.y + offset);
-	// if (isInBound(next))
-	// q.enqueue(next);
-	// }
-	//
-	// Point[] neighbors = new Point[q.size()];
-	//
-	// for (int i = 0; i < neighbors.length; i++)
-	// neighbors[i] = q.dequeue();
-	//
-	// assert neighbors.length <= 3;
-	// return neighbors;
-	// }
-	// });
-	// }
-	//
-	// private Iterable<Point> verticalTopSort()
-	// {
-	// return topologicalSort(p ->
-	// {
-	// if (p.x == -1 || p.y == -1)
-	// {
-	// assert p.x == -1 && p.y == -1;
-	//
-	// Point[] neighbors = new Point[pic.width()];
-	// for (int i = 0; i < neighbors.length; i++)
-	// neighbors[i] = new Point(i, 0);
-	//
-	// return neighbors;
-	// } else
-	// {
-	// if (p.x >= pic.height() - 1)
-	// {
-	// return new Point[0];
-	// }
-	// Queue<Point> q = new Queue<Point>();
-	// for (int offset = -1; offset <= 1; offset++)
-	// {
-	// Point next = new Point(p.x + offset, p.y + 1);
-	// if (isInBound(next))
-	// q.enqueue(next);
-	// }
-	//
-	// Point[] neighbors = new Point[q.size()];
-	//
-	// for (int i = 0; i < neighbors.length; i++)
-	// neighbors[i] = q.dequeue();
-	//
-	// assert neighbors.length <= 3;
-	// return neighbors;
-	// }
-	// });
-	// }
-
 	private void relax(Point cur, Point next, LinearProbingHashST<Point, Double> dist,
-			LinearProbingHashST<Point, Point> from)
+			LinearProbingHashST<Point, Point> from, double edgeWeight)
 	{
 		double curCost = dist.get(cur);
 		Double oldCost = dist.get(next);
-		double edgeWeight = energy(next.x, next.y);
 		if (oldCost == null || curCost + edgeWeight < oldCost)
 		{
 			dist.put(next, curCost + edgeWeight);
@@ -183,17 +71,8 @@ public class SeamCarver
 		}
 	}
 
-	// private int[] findSeam(Iterable<Point> topologicalOrder,
-	// LinearProbingHashST<Point, Double> dist,
-	// LinearProbingHashST<Point, Point> from)
-	// {
-	// int[] seam = new
-	// return null;
-	// }
-
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
-		// Iterable<Point> topologicalOrder = horizontalTopSort();
 		LinearProbingHashST<Point, Double> dist = new LinearProbingHashST<Point, Double>();
 		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
 
@@ -209,25 +88,20 @@ public class SeamCarver
 
 		for (int x = 0; x < pic.width(); x++)
 		{
+			double[] lut = null;
+			if (x + 1 < pic.width())
+			{
+				lut = new double[pic.height()];
+				for (int y = 0; y < lut.length; y++)
+				{
+					lut[y] = energy(x + 1, y);
+				}
+			}
+
 			for (int y = 0; y < pic.height(); y++)
 			{
 				Point cur = new Point(x, y);
-				Point a = new Point(cur.x + 1, cur.y + 1);
-				Point b = new Point(cur.x + 1, cur.y);
-				Point c = new Point(cur.x + 1, cur.y - 1);
-				if (isInBound(a))
-				{
-					relax(cur, a, dist, from);
-				}
-				if (isInBound(b))
-				{
-					relax(cur, b, dist, from);
-				}
-				if (isInBound(c))
-				{
-					relax(cur, c, dist, from);
-				}
-				if (cur.x + 1 >= pic.width())
+				if (x + 1 >= pic.width())
 				{
 					double curCost = dist.get(cur);
 					Double oldCost = dist.get(end);
@@ -236,7 +110,25 @@ public class SeamCarver
 						dist.put(end, curCost);
 						from.put(end, cur);
 					}
+				} else
+				{
+					Point a = new Point(cur.x + 1, cur.y + 1);
+					Point b = new Point(cur.x + 1, cur.y);
+					Point c = new Point(cur.x + 1, cur.y - 1);
+					if (isInBound(a))
+					{
+						relax(cur, a, dist, from, lut[a.y]);
+					}
+					if (isInBound(b))
+					{
+						relax(cur, b, dist, from, lut[b.y]);
+					}
+					if (isInBound(c))
+					{
+						relax(cur, c, dist, from, lut[c.y]);
+					}
 				}
+
 			}
 		}
 
@@ -269,22 +161,20 @@ public class SeamCarver
 
 		for (int y = 0; y < pic.height(); y++)
 		{
+			double[] lut = null;
+			if (y + 1 < pic.height())
+			{
+				lut = new double[pic.width()];
+				for (int x = 0; x < lut.length; x++)
+				{
+					lut[x] = energy(x, y + 1);
+				}
+			}
+
 			for (int x = 0; x < pic.width(); x++)
 			{
 				Point cur = new Point(x, y);
-				if (isInBound(x - 1, y + 1))
-				{
-					relax(cur, new Point(cur.x - 1, cur.y + 1), dist, from);
-				}
-				if (isInBound(x, y + 1))
-				{
-					relax(cur, new Point(cur.x, cur.y + 1), dist, from);
-				}
-				if (isInBound(x + 1, y + 1))
-				{
-					relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from);
-				}
-				if (cur.y + 1 >= pic.height())
+				if (y + 1 >= pic.height())
 				{
 					double curCost = dist.get(cur);
 					Double oldCost = dist.get(end);
@@ -293,7 +183,22 @@ public class SeamCarver
 						dist.put(end, curCost);
 						from.put(end, cur);
 					}
+				} else
+				{
+					if (isInBound(x - 1, y + 1))
+					{
+						relax(cur, new Point(cur.x - 1, cur.y + 1), dist, from, lut[x - 1]);
+					}
+					if (isInBound(x, y + 1))
+					{
+						relax(cur, new Point(cur.x, cur.y + 1), dist, from, lut[x]);
+					}
+					if (isInBound(x + 1, y + 1))
+					{
+						relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from, lut[x + 1]);
+					}
 				}
+
 			}
 		}
 

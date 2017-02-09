@@ -297,7 +297,7 @@ public class SeamCarver
 			}
 		}
 
-		int[] seam = new int[pic.width()];
+		int[] seam = new int[pic.height()];
 		Point cur = end;
 		for (int i = pic.height() - 1; i >= 0; i--)
 		{

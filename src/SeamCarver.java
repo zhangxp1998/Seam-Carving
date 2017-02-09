@@ -302,10 +302,10 @@ public class SeamCarver
 
 		int[] seam = new int[pic.width()];
 		Point cur = end;
-		for (int i = pic.width() - 1; i >= 0; i--)
+		for (int i = pic.height() - 1; i >= 0; i--)
 		{
 			Point prev = from.get(cur);
-			seam[i] = prev.y;
+			seam[i] = prev.x;
 			cur = prev;
 		}
 		return seam;
@@ -321,7 +321,7 @@ public class SeamCarver
 			for (int y = 0; y < pivot; y++)
 				p.set(x, y, pic.get(x, y));
 
-			for (int y = pivot + 1; y < p.height(); y++)
+			for (int y = pivot; y < p.height(); y++)
 				p.set(x, y, pic.get(x, y + 1));
 		}
 	}
@@ -336,7 +336,7 @@ public class SeamCarver
 			for (int x = 0; x < pivot; x++)
 				p.set(x, y, pic.get(x, y));
 
-			for (int x = pivot + 1; x < p.width(); x++)
+			for (int x = pivot; x < p.width(); x++)
 				p.set(x, y, pic.get(x + 1, y));
 		}
 	}

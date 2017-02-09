@@ -5,12 +5,21 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarverTest
 {
+	private String home;
+
+	@Before
+	public void setup()
+	{
+		home = System.getProperty("user.home");
+	}
+
 	private void testSeamFinding(String filename) throws FileNotFoundException
 	{
 		Picture p = new Picture(filename);
@@ -71,83 +80,84 @@ public class SeamCarverTest
 	@Test
 	public void testFindSeam5x6() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/5x6.png");
+		testSeamFinding(home + "/Downloads/seamCarving/5x6.png");
 	}
 
 	@Test
 	public void testFindSeam3x4() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/3x4.png");
+		testSeamFinding(home + "/Downloads/seamCarving/3x4.png");
 	}
 
 	@Test
 	public void testFindSeam3x7() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/3x7.png");
+		testSeamFinding(home + "/Downloads/seamCarving/3x7.png");
 	}
 
 	@Test
 	public void testFindSeam4x6() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/4x6.png");
+		testSeamFinding(home + "/Downloads/seamCarving/4x6.png");
 	}
 
 	@Test
 	public void testFindSeam6x5() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/6x5.png");
+		testSeamFinding(home + "/Downloads/seamCarving/6x5.png");
 	}
 
 	@Test
 	public void testFindSeam7x3() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/7x3.png");
+		testSeamFinding(home + "/Downloads/seamCarving/7x3.png");
 	}
 
 	@Test
 	public void testFindSeam7x10() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/7x10.png");
+		testSeamFinding(home + "/Downloads/seamCarving/7x10.png");
 	}
 
 	@Test
 	public void testFindSeam10x10() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/10x10.png");
+		testSeamFinding(home + "/Downloads/seamCarving/10x10.png");
 	}
 
 	@Test
 	public void testFindSeam10x12() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/10x12.png");
+		testSeamFinding(home + "/Downloads/seamCarving/10x12.png");
 	}
 
 	@Test
 	public void testFindSeam12x10() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/12x10.png");
+		testSeamFinding(home + "/Downloads/seamCarving/12x10.png");
 	}
 
 	@Test
 	public void testFindSeamdiagonals() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/diagonals.png");
+		testSeamFinding(home + "/Downloads/seamCarving/diagonals.png");
 	}
 
 	@Test
 	public void testFindSeamstripes() throws FileNotFoundException
 	{
-		testSeamFinding("/home/kelvin/Downloads/seamCarving/stripes.png");
+		testSeamFinding(home + "/Downloads/seamCarving/stripes.png");
 	}
 
-//	@Test
-//	public void testFindSeamBigPicture()
-//	{
-//		Picture p = new Picture("/home/kelvin/Downloads/seamCarving/chameleon.png");
-//		SeamCarver sc = new SeamCarver(p);
-//		int[] hseam = sc.findHorizontalSeam();
-//		System.out.println(hseam);
-//		int[] vseam = sc.findVerticalSeam();
-//		System.out.println(vseam);
-//	}
+	// @Test
+	// public void testFindSeamBigPicture()
+	// {
+	// Picture p = new
+	// Picture(home + "/Downloads/seamCarving/chameleon.png");
+	// SeamCarver sc = new SeamCarver(p);
+	// int[] hseam = sc.findHorizontalSeam();
+	// System.out.println(hseam);
+	// int[] vseam = sc.findVerticalSeam();
+	// System.out.println(vseam);
+	// }
 }

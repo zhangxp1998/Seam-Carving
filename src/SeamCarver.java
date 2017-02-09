@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.Arrays;
 
 import edu.princeton.cs.algs4.LinearProbingHashST;
 import edu.princeton.cs.algs4.Picture;
@@ -59,21 +60,28 @@ public class SeamCarver
 		return Math.sqrt(dx + dy);
 	}
 
-	private void relax(Point cur, Point next, LinearProbingHashST<Point, Double> dist,
-			LinearProbingHashST<Point, Point> from, double edgeWeight)
+	private void relax(Point cur, Point next, double[][] dist, LinearProbingHashST<Point, Point> from,
+			double edgeWeight)
 	{
-		double curCost = dist.get(cur);
-		Double oldCost = dist.get(next);
-		if (oldCost == null || curCost + edgeWeight < oldCost)
+		double curCost = dist[cur.y][cur.x];
+		// double curCost = dist.get(cur);
+		double oldCost = dist[next.y][next.x];
+		// Double oldCost = dist.get(next);
+		if (curCost + edgeWeight < oldCost)
 		{
-			dist.put(next, curCost + edgeWeight);
+			dist[next.y][next.x] = curCost + edgeWeight;
+			// dist.put(next, curCost + edgeWeight);
 			from.put(next, cur);
 		}
 	}
 
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
-		LinearProbingHashST<Point, Double> dist = new LinearProbingHashST<Point, Double>();
+		double endCost = Double.MAX_VALUE;
+		double[][] dist = new double[pic.height()][pic.width()];
+		for (double[] table : dist)
+			Arrays.fill(table, Double.MAX_VALUE);
+
 		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
 
 		Point start = new Point(-1, -1);
@@ -83,7 +91,8 @@ public class SeamCarver
 		{
 			Point p = new Point(0, i);
 			from.put(p, start);
-			dist.put(p, energy(p.x, p.y));
+			dist[i][0] = energy(p.x, p.y);
+			// dist.put(p, energy(p.x, p.y));
 		}
 
 		double[] lut = new double[pic.height()];
@@ -102,11 +111,14 @@ public class SeamCarver
 				Point cur = new Point(x, y);
 				if (x + 1 >= pic.width())
 				{
-					double curCost = dist.get(cur);
-					Double oldCost = dist.get(end);
-					if (oldCost == null || curCost < oldCost)
+					double curCost = dist[y][x];
+					// double curCost = dist.get(cur);
+					double oldCost = endCost;
+					// Double oldCost = dist.get(end);
+					if (curCost < oldCost)
 					{
-						dist.put(end, curCost);
+						endCost = curCost;
+						// dist.put(end, curCost);
 						from.put(end, cur);
 					}
 				} else
@@ -124,7 +136,6 @@ public class SeamCarver
 						relax(cur, new Point(cur.x + 1, cur.y - 1), dist, from, lut[y - 1]);
 					}
 				}
-
 			}
 		}
 
@@ -141,8 +152,11 @@ public class SeamCarver
 
 	public int[] findVerticalSeam() // sequence of indices for vertical seam
 	{
-		// Iterable<Point> topologicalOrder = verticalTopSort();
-		LinearProbingHashST<Point, Double> dist = new LinearProbingHashST<Point, Double>();
+		double endCost = Double.MAX_VALUE;
+		double[][] dist = new double[pic.height()][pic.width()];
+		for (double[] table : dist)
+			Arrays.fill(table, Double.MAX_VALUE);
+
 		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
 
 		Point start = new Point(-1, -1);
@@ -152,7 +166,8 @@ public class SeamCarver
 		{
 			Point p = new Point(i, 0);
 			from.put(p, start);
-			dist.put(p, energy(p.x, p.y));
+			dist[0][i] = energy(p.x, p.y);
+			// dist.put(p, energy(p.x, p.y));
 		}
 
 		double[] lut = new double[pic.width()];
@@ -171,11 +186,14 @@ public class SeamCarver
 				Point cur = new Point(x, y);
 				if (y + 1 >= pic.height())
 				{
-					double curCost = dist.get(cur);
-					Double oldCost = dist.get(end);
-					if (oldCost == null || curCost < oldCost)
+					double curCost = dist[y][x];
+					// double curCost = dist.get(cur);
+					double oldCost = endCost;
+					// Double oldCost = dist.get(end);
+					if (curCost < oldCost)
 					{
-						dist.put(end, curCost);
+						endCost = curCost;
+						// dist.put(end, curCost);
 						from.put(end, cur);
 					}
 				} else
@@ -193,7 +211,6 @@ public class SeamCarver
 						relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from, lut[x + 1]);
 					}
 				}
-
 			}
 		}
 

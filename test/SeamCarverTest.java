@@ -152,8 +152,7 @@ public class SeamCarverTest
 	// @Test
 	// public void testFindSeamBigPicture()
 	// {
-	// Picture p = new
-	// Picture(home + "/Downloads/seamCarving/chameleon.png");
+	// Picture p = new Picture(home + "/Downloads/seamCarving/chameleon.png");
 	// SeamCarver sc = new SeamCarver(p);
 	// int[] hseam = sc.findHorizontalSeam();
 	// System.out.println(hseam);

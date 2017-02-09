@@ -60,8 +60,7 @@ public class SeamCarver
 		return Math.sqrt(dx + dy);
 	}
 
-	private void relax(Point cur, Point next, double[][] dist, LinearProbingHashST<Point, Point> from,
-			double edgeWeight)
+	private void relax(Point cur, Point next, double[][] dist, Point[][] from, double edgeWeight)
 	{
 		double curCost = dist[cur.y][cur.x];
 		// double curCost = dist.get(cur);
@@ -71,7 +70,8 @@ public class SeamCarver
 		{
 			dist[next.y][next.x] = curCost + edgeWeight;
 			// dist.put(next, curCost + edgeWeight);
-			from.put(next, cur);
+			from[next.y][next.x] = cur;
+			// from.put(next, cur);
 		}
 	}
 
@@ -82,15 +82,17 @@ public class SeamCarver
 		for (double[] table : dist)
 			Arrays.fill(table, Double.MAX_VALUE);
 
-		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
+		Point endFrom = null;
+		Point[][] from = new Point[pic.height()][pic.width()];
 
 		Point start = new Point(-1, -1);
-		Point end = new Point(pic.width(), pic.height());
+		// Point end = new Point(pic.width(), pic.height());
 
 		for (int i = 0; i < pic.height(); i++)
 		{
 			Point p = new Point(0, i);
-			from.put(p, start);
+			from[i][0] = start;
+			// from.put(p, start);
 			dist[i][0] = energy(p.x, p.y);
 			// dist.put(p, energy(p.x, p.y));
 		}
@@ -119,7 +121,8 @@ public class SeamCarver
 					{
 						endCost = curCost;
 						// dist.put(end, curCost);
-						from.put(end, cur);
+						endFrom = cur;
+						// from.put(end, cur);
 					}
 				} else
 				{
@@ -140,12 +143,13 @@ public class SeamCarver
 		}
 
 		int[] seam = new int[pic.width()];
-		Point cur = end;
+		Point cur = endFrom;
 		for (int i = pic.width() - 1; i >= 0; i--)
 		{
-			Point prev = from.get(cur);
-			seam[i] = prev.y;
-			cur = prev;
+			seam[i] = cur.y;
+			cur = from[cur.y][cur.x];
+			// Point prev = from.get(cur);
+			// cur = prev;
 		}
 		return seam;
 	}
@@ -157,15 +161,17 @@ public class SeamCarver
 		for (double[] table : dist)
 			Arrays.fill(table, Double.MAX_VALUE);
 
-		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
+		Point endFrom = null;
+		Point[][] from = new Point[pic.height()][pic.width()];
 
 		Point start = new Point(-1, -1);
-		Point end = new Point(pic.width(), pic.height());
+		// Point end = new Point(pic.width(), pic.height());
 
 		for (int i = 0; i < pic.width(); i++)
 		{
 			Point p = new Point(i, 0);
-			from.put(p, start);
+			from[0][i] = start;
+			// from.put(p, start);
 			dist[0][i] = energy(p.x, p.y);
 			// dist.put(p, energy(p.x, p.y));
 		}
@@ -194,7 +200,8 @@ public class SeamCarver
 					{
 						endCost = curCost;
 						// dist.put(end, curCost);
-						from.put(end, cur);
+						endFrom = cur;
+						// from.put(end, cur);
 					}
 				} else
 				{
@@ -215,12 +222,11 @@ public class SeamCarver
 		}
 
 		int[] seam = new int[pic.height()];
-		Point cur = end;
+		Point cur = endFrom;
 		for (int i = pic.height() - 1; i >= 0; i--)
 		{
-			Point prev = from.get(cur);
-			seam[i] = prev.x;
-			cur = prev;
+			seam[i] = cur.x;
+			cur = from[cur.y][cur.x];
 		}
 		return seam;
 	}

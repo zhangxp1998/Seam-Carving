@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.util.Arrays;
 
-import edu.princeton.cs.algs4.LinearProbingHashST;
 import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarver
@@ -234,10 +233,16 @@ public class SeamCarver
 	public void removeHorizontalSeam(int[] seam) // remove horizontal seam from
 													// current picture
 	{
+		if (seam.length != pic.width())
+			throw new IllegalArgumentException();
+
 		Picture p = new Picture(pic.width(), pic.height() - 1);
 		for (int x = 0; x < p.width(); x++)
 		{
 			int pivot = seam[x];
+			if (pivot < 0 || pivot >= pic.height())
+				throw new IllegalArgumentException();
+
 			for (int y = 0; y < pivot; y++)
 				p.set(x, y, pic.get(x, y));
 
@@ -250,10 +255,16 @@ public class SeamCarver
 	public void removeVerticalSeam(int[] seam) // remove vertical seam from
 												// current picture
 	{
+		if (seam.length != pic.height())
+			throw new IllegalArgumentException();
+
 		Picture p = new Picture(pic.width() - 1, pic.height());
 		for (int y = 0; y < p.height(); y++)
 		{
 			int pivot = seam[y];
+			if (pivot < 0 || pivot >= pic.width())
+				throw new IllegalArgumentException();
+
 			for (int x = 0; x < pivot; x++)
 				p.set(x, y, pic.get(x, y));
 

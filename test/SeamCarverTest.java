@@ -149,14 +149,14 @@ public class SeamCarverTest
 		testSeamFinding(home + "/Downloads/seamCarving/stripes.png");
 	}
 
-	// @Test
-	// public void testFindSeamBigPicture()
-	// {
-	// Picture p = new Picture(home + "/Downloads/seamCarving/chameleon.png");
-	// SeamCarver sc = new SeamCarver(p);
-	// int[] hseam = sc.findHorizontalSeam();
-	// System.out.println(hseam);
-	// int[] vseam = sc.findVerticalSeam();
-	// System.out.println(vseam);
-	// }
+	@Test
+	public void testFindSeamBigPicture()
+	{
+		Picture p = new Picture(home + "/Downloads/seamCarving/chameleon.png");
+		SeamCarver sc = new SeamCarver(p);
+		int[] hseam = sc.findHorizontalSeam();
+		System.out.println(hseam);
+		int[] vseam = sc.findVerticalSeam();
+		System.out.println(vseam);
+	}
 }

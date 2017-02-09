@@ -272,20 +272,17 @@ public class SeamCarver
 			for (int x = 0; x < pic.width(); x++)
 			{
 				Point cur = new Point(x, y);
-				Point a = new Point(cur.x + 1, cur.y + 1);
-				Point b = new Point(cur.x + 1, cur.y);
-				Point c = new Point(cur.x + 1, cur.y - 1);
-				if (isInBound(a))
+				if (isInBound(x + 1, y + 1))
 				{
-					relax(cur, a, dist, from);
+					relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from);
 				}
-				if (isInBound(b))
+				if (isInBound(x + 1, y))
 				{
-					relax(cur, b, dist, from);
+					relax(cur, new Point(cur.x + 1, cur.y), dist, from);
 				}
-				if (isInBound(c))
+				if (isInBound(x + 1, y - 1))
 				{
-					relax(cur, c, dist, from);
+					relax(cur, new Point(cur.x + 1, cur.y - 1), dist, from);
 				}
 				if (cur.x + 1 >= pic.width())
 				{
@@ -324,6 +321,7 @@ public class SeamCarver
 			for (int y = pivot; y < p.height(); y++)
 				p.set(x, y, pic.get(x, y + 1));
 		}
+		pic = p;
 	}
 
 	public void removeVerticalSeam(int[] seam) // remove vertical seam from
@@ -339,5 +337,6 @@ public class SeamCarver
 			for (int x = pivot; x < p.width(); x++)
 				p.set(x, y, pic.get(x + 1, y));
 		}
+		pic = p;
 	}
 }

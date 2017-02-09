@@ -240,6 +240,8 @@ public class SeamCarver
 		for (int x = 0; x < p.width(); x++)
 		{
 			int pivot = seam[x];
+			if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
+				throw new IllegalArgumentException();
 			if (pivot < 0 || pivot >= pic.height())
 				throw new IllegalArgumentException();
 
@@ -262,6 +264,8 @@ public class SeamCarver
 		for (int y = 0; y < p.height(); y++)
 		{
 			int pivot = seam[y];
+			if (y > 0 && Math.abs(seam[y - 1] - pivot) >= 2)
+				throw new IllegalArgumentException();
 			if (pivot < 0 || pivot >= pic.width())
 				throw new IllegalArgumentException();
 

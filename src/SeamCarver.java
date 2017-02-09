@@ -39,10 +39,10 @@ public class SeamCarver
 		return x >= 0 && x < pic.width() && y >= 0 && y < pic.height();
 	}
 
-	private boolean isInBound(Point p)
-	{
-		return isInBound(p.x, p.y);
-	}
+	// private boolean isInBound(Point p)
+	// {
+	// return isInBound(p.x, p.y);
+	// }
 
 	public double energy(int x, int y) // energy of pixel at column x and row y
 	{
@@ -86,12 +86,11 @@ public class SeamCarver
 			dist.put(p, energy(p.x, p.y));
 		}
 
+		double[] lut = new double[pic.height()];
 		for (int x = 0; x < pic.width(); x++)
 		{
-			double[] lut = null;
 			if (x + 1 < pic.width())
 			{
-				lut = new double[pic.height()];
 				for (int y = 0; y < lut.length; y++)
 				{
 					lut[y] = energy(x + 1, y);
@@ -112,20 +111,17 @@ public class SeamCarver
 					}
 				} else
 				{
-					Point a = new Point(cur.x + 1, cur.y + 1);
-					Point b = new Point(cur.x + 1, cur.y);
-					Point c = new Point(cur.x + 1, cur.y - 1);
-					if (isInBound(a))
+					if (isInBound(x + 1, y + 1))
 					{
-						relax(cur, a, dist, from, lut[a.y]);
+						relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from, lut[y + 1]);
 					}
-					if (isInBound(b))
+					if (isInBound(x + 1, y))
 					{
-						relax(cur, b, dist, from, lut[b.y]);
+						relax(cur, new Point(cur.x + 1, cur.y), dist, from, lut[y]);
 					}
-					if (isInBound(c))
+					if (isInBound(x + 1, y - 1))
 					{
-						relax(cur, c, dist, from, lut[c.y]);
+						relax(cur, new Point(cur.x + 1, cur.y - 1), dist, from, lut[y - 1]);
 					}
 				}
 
@@ -159,12 +155,11 @@ public class SeamCarver
 			dist.put(p, energy(p.x, p.y));
 		}
 
+		double[] lut = new double[pic.width()];
 		for (int y = 0; y < pic.height(); y++)
 		{
-			double[] lut = null;
 			if (y + 1 < pic.height())
 			{
-				lut = new double[pic.width()];
 				for (int x = 0; x < lut.length; x++)
 				{
 					lut[x] = energy(x, y + 1);

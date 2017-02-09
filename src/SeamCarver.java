@@ -74,15 +74,19 @@ public class SeamCarver
 		outer: while (!stack.isEmpty())
 		{
 			Point cur = stack.peek();
+			if(visited.contains(cur))
+			{
+				continue;
+			}
 			for (Point next : neighbors.apply(cur))
 			{
 				if (!visited.contains(next))
 				{
 					stack.push(next);
-					visited.add(next);
 					continue outer;
 				}
 			}
+			visited.add(cur);
 			topologicalOrder.enqueue(stack.pop());
 		}
 

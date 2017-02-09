@@ -17,4 +17,15 @@ public class Point
 	{
 		return hash;
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o instanceof Point)
+		{
+			Point p = (Point) o;
+			return p.x == x && p.y == y;
+		}
+		return false;
+	}
 }

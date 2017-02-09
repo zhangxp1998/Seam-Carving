@@ -260,9 +260,9 @@ public class SeamCarver
 		Point start = new Point(-1, -1);
 		Point end = new Point(pic.width(), pic.height());
 
-		for (int i = 0; i < pic.height(); i++)
+		for (int i = 0; i < pic.width(); i++)
 		{
-			Point p = new Point(0, i);
+			Point p = new Point(i, 0);
 			from.put(p, start);
 			dist.put(p, energy(p.x, p.y));
 		}
@@ -272,19 +272,19 @@ public class SeamCarver
 			for (int x = 0; x < pic.width(); x++)
 			{
 				Point cur = new Point(x, y);
+				if (isInBound(x - 1, y + 1))
+				{
+					relax(cur, new Point(cur.x - 1, cur.y + 1), dist, from);
+				}
+				if (isInBound(x, y + 1))
+				{
+					relax(cur, new Point(cur.x, cur.y + 1), dist, from);
+				}
 				if (isInBound(x + 1, y + 1))
 				{
 					relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from);
 				}
-				if (isInBound(x + 1, y))
-				{
-					relax(cur, new Point(cur.x + 1, cur.y), dist, from);
-				}
-				if (isInBound(x + 1, y - 1))
-				{
-					relax(cur, new Point(cur.x + 1, cur.y - 1), dist, from);
-				}
-				if (cur.x + 1 >= pic.width())
+				if (cur.y + 1 >= pic.height())
 				{
 					double curCost = dist.get(cur);
 					Double oldCost = dist.get(end);

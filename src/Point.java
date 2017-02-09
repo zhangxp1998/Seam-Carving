@@ -4,6 +4,7 @@ public class Point
 	public final int x;
 	public final int y;
 	private final int hash;
+	private String rep;
 
 	public Point(int x, int y)
 	{
@@ -27,5 +28,15 @@ public class Point
 			return p.x == x && p.y == y;
 		}
 		return false;
+	}
+
+	@Override
+	public String toString()
+	{
+		if (rep == null)
+		{
+			rep = String.format("(%d, %d)", x, y);
+		}
+		return rep;
 	}
 }

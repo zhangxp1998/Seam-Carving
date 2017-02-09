@@ -62,9 +62,9 @@ public class SeamCarver
 		return Math.sqrt(dx + dy);
 	}
 
-	private Queue<Point> topologicalSort(Function<Point, Point[]> neighbors)
+	private Iterable<Point> topologicalSort(Function<Point, Point[]> neighbors)
 	{
-		Queue<Point> topologicalOrder = new Queue<Point>();
+		Stack<Point> topologicalOrder = new Stack<Point>();
 		Stack<Point> stack = new Stack<Point>();
 		LinearProbingHashSet<Point> visited = new LinearProbingHashSet<Point>();
 
@@ -74,7 +74,7 @@ public class SeamCarver
 		outer: while (!stack.isEmpty())
 		{
 			Point cur = stack.peek();
-			if(visited.contains(cur))
+			if (visited.contains(cur))
 			{
 				continue;
 			}
@@ -87,16 +87,16 @@ public class SeamCarver
 				}
 			}
 			visited.add(cur);
-			topologicalOrder.enqueue(stack.pop());
+			topologicalOrder.push(stack.pop());
 		}
 
-		Point first = topologicalOrder.dequeue();
+		Point first = topologicalOrder.pop();
 		assert first == start;
 
 		return topologicalOrder;
 	}
 
-	private Queue<Point> horizontalTopSort()
+	private Iterable<Point> horizontalTopSort()
 	{
 		return topologicalSort(p ->
 		{
@@ -134,7 +134,7 @@ public class SeamCarver
 		});
 	}
 
-	private Queue<Point> verticalTopSort()
+	private Iterable<Point> verticalTopSort()
 	{
 		return topologicalSort(p ->
 		{
@@ -195,7 +195,7 @@ public class SeamCarver
 
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
-		Queue<Point> topologicalOrder = horizontalTopSort();
+		Iterable<Point> topologicalOrder = horizontalTopSort();
 		LinearProbingHashST<Point, Double> dist = new LinearProbingHashST<Point, Double>();
 		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
 
@@ -209,9 +209,8 @@ public class SeamCarver
 			dist.put(p, energy(p.x, p.y));
 		}
 
-		while (!topologicalOrder.isEmpty())
+		for (Point cur : topologicalOrder)
 		{
-			Point cur = topologicalOrder.dequeue();
 			Point a = new Point(cur.x + 1, cur.y + 1);
 			Point b = new Point(cur.x + 1, cur.y);
 			Point c = new Point(cur.x + 1, cur.y - 1);
@@ -252,7 +251,7 @@ public class SeamCarver
 
 	public int[] findVerticalSeam() // sequence of indices for vertical seam
 	{
-		Queue<Point> topologicalOrder = verticalTopSort();
+		Iterable<Point> topologicalOrder = verticalTopSort();
 		LinearProbingHashST<Point, Double> dist = new LinearProbingHashST<Point, Double>();
 		LinearProbingHashST<Point, Point> from = new LinearProbingHashST<Point, Point>();
 
@@ -266,9 +265,8 @@ public class SeamCarver
 			dist.put(p, energy(p.x, p.y));
 		}
 
-		while (!topologicalOrder.isEmpty())
+		for (Point cur : topologicalOrder)
 		{
-			Point cur = topologicalOrder.dequeue();
 			Point a = new Point(cur.x + 1, cur.y + 1);
 			Point b = new Point(cur.x + 1, cur.y);
 			Point c = new Point(cur.x + 1, cur.y - 1);
@@ -316,7 +314,7 @@ public class SeamCarver
 			int pivot = seam[x];
 			for (int y = 0; y < pivot; y++)
 				p.set(x, y, pic.get(x, y));
-			
+
 			for (int y = pivot + 1; y < pic.height(); y++)
 				p.set(x, y, pic.get(x, y + 1));
 		}

@@ -54,8 +54,8 @@ public class SeamCarverTest
 		assert hanswer != null;
 		assert vanswer != null;
 
-		System.out.println(Arrays.toString(hanswer));
-		System.out.println(Arrays.toString(vanswer));
+//		System.out.println(Arrays.toString(hanswer));
+//		System.out.println(Arrays.toString(vanswer));
 
 		in.close();
 

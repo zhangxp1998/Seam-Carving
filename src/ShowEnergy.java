@@ -25,7 +25,5 @@ public class ShowEnergy
 
 		StdOut.printf("Displaying energy calculated for each pixel.\n");
 		SCUtility.showEnergy(sc);
-
 	}
-
 }

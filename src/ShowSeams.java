@@ -16,7 +16,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class ShowSeams
 {
 
-	private static void showHorizontalSeam(SeamCarver sc)
+	private static void showHorizontalSeam(DPSeamCarving sc)
 	{
 		Picture picture = SCUtility.toEnergyPicture(sc);
 		int[] horizontalSeam = sc.findHorizontalSeam();
@@ -24,7 +24,7 @@ public class ShowSeams
 		overlay.show();
 	}
 
-	private static void showVerticalSeam(SeamCarver sc)
+	private static void showVerticalSeam(DPSeamCarving sc)
 	{
 		Picture picture = SCUtility.toEnergyPicture(sc);
 		int[] verticalSeam = sc.findVerticalSeam();
@@ -37,7 +37,7 @@ public class ShowSeams
 		Picture picture = new Picture(args[0]);
 		StdOut.printf("image is %d columns by %d rows\n", picture.width(), picture.height());
 		picture.show();
-		SeamCarver sc = new SeamCarver(picture);
+		SeamCarver sc = new DPSeamCarving(picture);
 
 		StdOut.printf("Displaying horizontal seam calculated.\n");
 		showHorizontalSeam(sc);

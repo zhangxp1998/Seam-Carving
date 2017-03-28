@@ -30,7 +30,7 @@ public class ResizeDemo
 		int removeRows = Integer.parseInt(args[2]);
 
 		StdOut.printf("image is %d columns by %d rows\n", inputImg.width(), inputImg.height());
-		SeamCarver sc = new SeamCarver(inputImg);
+		SeamCarver sc = new DPSeamCarving(inputImg);
 
 		Stopwatch sw = new Stopwatch();
 

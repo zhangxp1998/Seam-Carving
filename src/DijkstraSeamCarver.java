@@ -4,7 +4,6 @@ import java.util.Comparator;
 import edu.princeton.cs.algs4.DirectedEdge;
 import edu.princeton.cs.algs4.EdgeWeightedDigraph;
 import edu.princeton.cs.algs4.IndexMinPQ;
-import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Picture;
 
 public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer>
@@ -36,19 +35,19 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		return energy(x(id), y(id));
 	}
 
-	private void relax(int cur, int next, double[][] dist, int[][] from, double edgeWeight)
-	{
-		double curCost = dist[y(cur)][x(cur)];
-		double oldCost = dist[y(next)][x(next)];
-
-		if (curCost + edgeWeight < oldCost)
-		{
-			dist[y(next)][x(next)] = curCost + edgeWeight;
-			// dist.put(next, curCost + edgeWeight);
-			from[y(next)][x(next)] = cur;
-			// from.put(next, cur);
-		}
-	}
+//	private void relax(int cur, int next, double[][] dist, int[][] from, double edgeWeight)
+//	{
+//		double curCost = dist[y(cur)][x(cur)];
+//		double oldCost = dist[y(next)][x(next)];
+//
+//		if (curCost + edgeWeight < oldCost)
+//		{
+//			dist[y(next)][x(next)] = curCost + edgeWeight;
+//			// dist.put(next, curCost + edgeWeight);
+//			from[y(next)][x(next)] = cur;
+//			// from.put(next, cur);
+//		}
+//	}
 
 	private DirectedEdge[] dijkstra(EdgeWeightedDigraph G, int s, int t)
 	{
@@ -68,9 +67,9 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		{
 			int v = pq.delMin();
 
-			// early termination
-			// if (v == t)
-			// break;
+//			 early termination
+			if (v == t)
+				break;
 
 			for (DirectedEdge e : G.adj(v))
 			{
@@ -101,6 +100,7 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		int s = W * H;
 		int t = W * H + 1;
 
+		// The source is connected to all vertices on the leftmost column
 		for (int i = 0; i < H; i++)
 		{
 			g.addEdge(new DirectedEdge(s, id(0, i), energy(0, i)));
@@ -113,11 +113,11 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 			{
 				int id = id(j, i);
 				if (isInBound(j + 1, i + 1))
-					g.addEdge(new DirectedEdge(id, id(j + 1, i + 1), energy(j + 1, i + 1)));
+					g.addEdge(new DirectedEdge(id, id(j + 1, i + 1), 	energy(j + 1, i + 1)));
 				if (isInBound(j + 1, i))
-					g.addEdge(new DirectedEdge(id, id(j + 1, i), energy(j + 1, i)));
+					g.addEdge(new DirectedEdge(id, id(j + 1, i), 		energy(j + 1, i)));
 				if (isInBound(j + 1, i - 1))
-					g.addEdge(new DirectedEdge(id, id(j + 1, i - 1), energy(j + 1, i - 1)));
+					g.addEdge(new DirectedEdge(id, id(j + 1, i - 1), 	energy(j + 1, i - 1)));
 			}
 		}
 
@@ -141,52 +141,43 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		// Width and height of current picture, for convenience
 		final int W = width();
 		final int H = height();
+		EdgeWeightedDigraph g = new EdgeWeightedDigraph(W * H + 2);
 
-		// distance look up table
-		// stores the distance from vertex [i, j] to the source
-		double[][] dist = new double[H][W];
-		for (double[] table : dist)
-			Arrays.fill(table, Double.MAX_VALUE);
+		int s = W * H;
+		int t = W * H + 1;
 
-		// Use custom comparing method
-		MinPQ<Integer> que = new MinPQ<Integer>(this);
+		// The source is connected to all vertices on the leftmost column
 		for (int j = 0; j < W; j++)
 		{
-			que.insert(id(j, 0));
-			dist[0][j] = 0;
+			g.addEdge(new DirectedEdge(s, id(j, 0), energy(j, 0)));
+			g.addEdge(new DirectedEdge(id(j, H - 1), t, 0));
 		}
 
-		// a from table
-		int[][] from = new int[H][W];
-
-		// target we stopped at
-		int t = 0;
-
-		while (!que.isEmpty())
+		for (int i = 0; i < H; i++)
 		{
-			int id = que.delMin();
-			int x = x(id);
-			int y = y(id);
-			if (y == H - 1)
+			for (int j = 0; j < W; j++)
 			{
-				t = id;
-				break;
+				int id = id(j, i);
+				if (isInBound(j + 1, 	i + 1))
+					g.addEdge(new DirectedEdge(id, id(j + 1, 	i + 1), energy(j + 1, 	i + 1)));
+				if (isInBound(j, 		i + 1))
+					g.addEdge(new DirectedEdge(id, id(j, 		i + 1), energy(j, 		i + 1)));
+				if (isInBound(j - 1, 	i + 1))
+					g.addEdge(new DirectedEdge(id, id(j - 1, 	i + 1), energy(j - 1, 	i + 1)));
 			}
-			if (isInBound(x + 1, y + 1))
-				relax(id, id(x + 1, y + 1), dist, from, energy(x, y + 1));
-			if (isInBound(x + 1, y))
-				relax(id, id(x + 1, y), dist, from, energy(x, y));
-			if (isInBound(x + 1, y - 1))
-				relax(id, id(x + 1, y - 1), dist, from, energy(x, y - 1));
 		}
+
+		DirectedEdge[] from = dijkstra(g, s, t);
+
+		int cur = t;
 
 		int[] seam = new int[H];
-		int cur = t;
-		for (int i = H - 1; i >= 0; i--)
+		for (int i = seam.length - 1; i >= 0; i--)
 		{
+			cur = from[cur].from();
 			seam[i] = x(cur);
-			cur = from[y(cur)][x(cur)];
 		}
+
 		return seam;
 	}
 

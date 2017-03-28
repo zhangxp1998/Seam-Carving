@@ -9,41 +9,34 @@ public class DPSeamCarving extends SeamCarver
 		super(pic);
 	}
 
-	private void relax(Point cur, Point next, double[][] dist, Point[][] from, double edgeWeight)
+	private void relax(int cur, int next, double[] dist, int[] from, double edgeWeight)
 	{
-		double curCost = dist[cur.y][cur.x];
-		// double curCost = dist.get(cur);
-		double oldCost = dist[next.y][next.x];
-		// Double oldCost = dist.get(next);
+		double curCost = dist[cur];
+		double oldCost = dist[next];
 		if (curCost + edgeWeight < oldCost)
 		{
-			dist[next.y][next.x] = curCost + edgeWeight;
-			// dist.put(next, curCost + edgeWeight);
-			from[next.y][next.x] = cur;
-			// from.put(next, cur);
+			dist[next] = curCost + edgeWeight;
+			from[next] = cur;
 		}
 	}
 
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
 		double endCost = Double.MAX_VALUE;
-		double[][] dist = new double[pic.height()][pic.width()];
-		for (double[] table : dist)
-			Arrays.fill(table, Double.MAX_VALUE);
+		double[] dist = new double[pic.height() * pic.width()];
+		Arrays.fill(dist, Double.MAX_VALUE);
 
-		Point endFrom = null;
-		Point[][] from = new Point[pic.height()][pic.width()];
+		int endFrom = 0;
+		int[] from = new int[pic.height() * pic.width()];
 
-		Point start = new Point(-1, -1);
+		int start = id(-1, -1);
 		// Point end = new Point(pic.width(), pic.height());
 
 		for (int i = 0; i < pic.height(); i++)
 		{
-			Point p = new Point(0, i);
-			from[i][0] = start;
-			// from.put(p, start);
-			dist[i][0] = energy(p.x, p.y);
-			// dist.put(p, energy(p.x, p.y));
+			int id = id(0, i);
+			from[id] = start;
+			dist[id] = energy(0, i);
 		}
 
 		double[] lut = new double[pic.height()];
@@ -59,10 +52,10 @@ public class DPSeamCarving extends SeamCarver
 
 			for (int y = 0; y < pic.height(); y++)
 			{
-				Point cur = new Point(x, y);
+				int cur = id(x, y);
 				if (x + 1 >= pic.width())
 				{
-					double curCost = dist[y][x];
+					double curCost = dist[cur];
 					// double curCost = dist.get(cur);
 					double oldCost = endCost;
 					// Double oldCost = dist.get(end);
@@ -76,23 +69,21 @@ public class DPSeamCarving extends SeamCarver
 				} else
 				{
 					if (isInBound(x + 1, y + 1))
-						relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from, lut[y + 1]);
+						relax(cur, id(x + 1, y + 1), dist, from, lut[y + 1]);
 					if (isInBound(x + 1, y))
-						relax(cur, new Point(cur.x + 1, cur.y), dist, from, lut[y]);
+						relax(cur, id(x + 1, y), dist, from, lut[y]);
 					if (isInBound(x + 1, y - 1))
-						relax(cur, new Point(cur.x + 1, cur.y - 1), dist, from, lut[y - 1]);
+						relax(cur, id(x + 1, y - 1), dist, from, lut[y - 1]);
 				}
 			}
 		}
 
 		int[] seam = new int[pic.width()];
-		Point cur = endFrom;
+		int cur = endFrom;
 		for (int i = pic.width() - 1; i >= 0; i--)
 		{
-			seam[i] = cur.y;
-			cur = from[cur.y][cur.x];
-			// Point prev = from.get(cur);
-			// cur = prev;
+			seam[i] = y(cur);
+			cur = from[cur];
 		}
 		return seam;
 	}
@@ -100,23 +91,20 @@ public class DPSeamCarving extends SeamCarver
 	public int[] findVerticalSeam() // sequence of indices for vertical seam
 	{
 		double endCost = Double.MAX_VALUE;
-		double[][] dist = new double[pic.height()][pic.width()];
-		for (double[] table : dist)
-			Arrays.fill(table, Double.MAX_VALUE);
+		double[] dist = new double[pic.height() * pic.width()];
+		Arrays.fill(dist, Double.MAX_VALUE);
 
-		Point endFrom = null;
-		Point[][] from = new Point[pic.height()][pic.width()];
+		int endFrom = 0;
+		int[] from = new int[pic.height() * pic.width()];
 
-		Point start = new Point(-1, -1);
+		int start = id(-1, -1);
 		// Point end = new Point(pic.width(), pic.height());
 
 		for (int i = 0; i < pic.width(); i++)
 		{
-			Point p = new Point(i, 0);
-			from[0][i] = start;
-			// from.put(p, start);
-			dist[0][i] = energy(p.x, p.y);
-			// dist.put(p, energy(p.x, p.y));
+			int id = id(i, 0);
+			from[id] = start;
+			dist[id] = energy(i, 0);
 		}
 
 		double[] lut = new double[pic.width()];
@@ -132,10 +120,10 @@ public class DPSeamCarving extends SeamCarver
 
 			for (int x = 0; x < pic.width(); x++)
 			{
-				Point cur = new Point(x, y);
+				int cur = id(x, y);
 				if (y + 1 >= pic.height())
 				{
-					double curCost = dist[y][x];
+					double curCost = dist[cur];
 					// double curCost = dist.get(cur);
 					double oldCost = endCost;
 					// Double oldCost = dist.get(end);
@@ -148,22 +136,24 @@ public class DPSeamCarving extends SeamCarver
 					}
 				} else
 				{
-					if (isInBound(x - 1, y + 1))
-						relax(cur, new Point(cur.x - 1, cur.y + 1), dist, from, lut[x - 1]);
-					if (isInBound(x, y + 1))
-						relax(cur, new Point(cur.x, cur.y + 1), dist, from, lut[x]);
 					if (isInBound(x + 1, y + 1))
-						relax(cur, new Point(cur.x + 1, cur.y + 1), dist, from, lut[x + 1]);
+						relax(cur, id(x + 1, y + 1), dist, from, lut[x + 1]);
+
+					if (isInBound(x, y + 1))
+						relax(cur, id(x, y + 1), dist, from, lut[x]);
+
+					if (isInBound(x - 1, y + 1))
+						relax(cur, id(x - 1, y + 1), dist, from, lut[x - 1]);
 				}
 			}
 		}
 
 		int[] seam = new int[pic.height()];
-		Point cur = endFrom;
+		int cur = endFrom;
 		for (int i = pic.height() - 1; i >= 0; i--)
 		{
-			seam[i] = cur.x;
-			cur = from[cur.y][cur.x];
+			seam[i] = x(cur);
+			cur = from[cur];
 		}
 		return seam;
 	}

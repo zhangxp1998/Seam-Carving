@@ -5,14 +5,30 @@ import edu.princeton.cs.algs4.Picture;
 public abstract class SeamCarver
 {
 	protected Picture pic;
-	
+
 	public SeamCarver(Picture pic)
 	{
-		if(pic == null)
+		if (pic == null)
 			throw new NullPointerException();
 		this.pic = pic;
 	}
-	
+
+	// turn coordinate into unique id
+	protected int id(int x, int y)
+	{
+		return x * pic.height() + y;
+	}
+
+	protected int x(int id)
+	{
+		return id / pic.height();
+	}
+
+	protected int y(int id)
+	{
+		return id % pic.height();
+	}
+
 	public Picture picture()
 	{
 		return pic;

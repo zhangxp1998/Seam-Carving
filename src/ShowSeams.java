@@ -16,7 +16,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class ShowSeams
 {
 
-	private static void showHorizontalSeam(DPSeamCarving sc)
+	private static void showHorizontalSeam(SeamCarver sc)
 	{
 		Picture picture = SCUtility.toEnergyPicture(sc);
 		int[] horizontalSeam = sc.findHorizontalSeam();
@@ -24,7 +24,7 @@ public class ShowSeams
 		overlay.show();
 	}
 
-	private static void showVerticalSeam(DPSeamCarving sc)
+	private static void showVerticalSeam(SeamCarver sc)
 	{
 		Picture picture = SCUtility.toEnergyPicture(sc);
 		int[] verticalSeam = sc.findVerticalSeam();

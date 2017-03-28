@@ -68,7 +68,7 @@ public class SeamCarverTest
 
 		in.close();
 
-		DPSeamCarving sc = new DPSeamCarving(p);
+		SeamCarver sc = new DPSeamCarving(p);
 		int[] hseam = sc.findHorizontalSeam();
 		assertTrue(Arrays.equals(hanswer, hseam));
 
@@ -153,7 +153,7 @@ public class SeamCarverTest
 	public void testFindSeamBigPicture()
 	{
 		Picture p = new Picture(home + "/Downloads/seamCarving/chameleon.png");
-		DPSeamCarving sc = new DPSeamCarving(p);
+		SeamCarver sc = new DPSeamCarving(p);
 		int[] hseam = sc.findHorizontalSeam();
 		System.out.println(hseam);
 		int[] vseam = sc.findVerticalSeam();

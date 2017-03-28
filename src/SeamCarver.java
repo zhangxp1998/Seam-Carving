@@ -13,17 +13,32 @@ public abstract class SeamCarver
 		this.pic = pic;
 	}
 
-	// turn coordinate into unique id
+	/**
+	 * Turn Vertex into a unique id
+	 * @param x x coordinate of the Vertex
+	 * @param y y coordinate of the Vertex
+	 * @return
+	 */
 	protected int id(int x, int y)
 	{
 		return x * pic.height() + y;
 	}
-
+	
+	/**
+	 * Turn a unique id back to x coordinate
+	 * @param id
+	 * @return
+	 */
 	protected int x(int id)
 	{
 		return id / pic.height();
 	}
 
+	/**
+	 * Turn a unique id back to y coordinate
+	 * @param id
+	 * @return
+	 */
 	protected int y(int id)
 	{
 		return id % pic.height();

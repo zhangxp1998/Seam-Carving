@@ -24,15 +24,16 @@ public class DPSeamCarving extends SeamCarver
 	{
 		final int H = pic.height();
 		final int W = pic.width();
-		
-		double endCost = Double.MAX_VALUE;
-		double[] dist = new double[H * W];
+
+		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);
 
-		int endFrom = 0;
-		int[] from = new int[H * W];
+		// The artificial end point
+		int t = H * W;
 
-		//An artificial starting point
+		int[] from = new int[H * W + 1];
+
+		// An artificial starting point
 		int start = id(-1, -1);
 
 		for (int i = 0; i < H; i++)
@@ -47,7 +48,7 @@ public class DPSeamCarving extends SeamCarver
 		{
 			if (x + 1 < W)
 			{
-				//Initialize the energy look up table
+				// Initialize the energy look up table
 				for (int y = 0; y < lut.length; y++)
 				{
 					lut[y] = energy(x + 1, y);
@@ -59,13 +60,7 @@ public class DPSeamCarving extends SeamCarver
 				int cur = id(x, y);
 				if (x + 1 >= W)
 				{
-					double curCost = dist[cur];
-					double oldCost = endCost;
-					if (curCost < oldCost)
-					{
-						endCost = curCost;
-						endFrom = cur;
-					}
+					relax(cur, t, dist, from, 0);
 				} else
 				{
 					if (isInBound(x + 1, y + 1))
@@ -79,11 +74,11 @@ public class DPSeamCarving extends SeamCarver
 		}
 
 		int[] seam = new int[W];
-		int cur = endFrom;
+		int cur = t;
 		for (int i = W - 1; i >= 0; i--)
 		{
-			seam[i] = y(cur);
 			cur = from[cur];
+			seam[i] = y(cur);
 		}
 		return seam;
 	}
@@ -92,13 +87,14 @@ public class DPSeamCarving extends SeamCarver
 	{
 		final int H = pic.height();
 		final int W = pic.width();
-		
-		double endCost = Double.MAX_VALUE;
-		double[] dist = new double[H * W];
+
+		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);
 
-		int endFrom = 0;
-		int[] from = new int[H * W];
+		// The artificial end point
+		int t = H * W;
+
+		int[] from = new int[H * W + 1];
 
 		int start = id(-1, -1);
 
@@ -125,13 +121,7 @@ public class DPSeamCarving extends SeamCarver
 				int cur = id(x, y);
 				if (y + 1 >= H)
 				{
-					double curCost = dist[cur];
-					double oldCost = endCost;
-					if (curCost < oldCost)
-					{
-						endCost = curCost;
-						endFrom = cur;
-					}
+					relax(cur, t, dist, from, 0);
 				} else
 				{
 					if (isInBound(x + 1, y + 1))
@@ -145,15 +135,14 @@ public class DPSeamCarving extends SeamCarver
 				}
 			}
 		}
-		
-		
-		//Reconstruct the path
+
+		// Reconstruct the path
 		int[] seam = new int[H];
-		int cur = endFrom;
+		int cur = t;
 		for (int i = H - 1; i >= 0; i--)
 		{
-			seam[i] = x(cur);
 			cur = from[cur];
+			seam[i] = x(cur);
 		}
 		return seam;
 	}

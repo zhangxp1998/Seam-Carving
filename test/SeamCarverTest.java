@@ -68,7 +68,7 @@ public class SeamCarverTest
 
 		in.close();
 
-		SeamCarver sc = new DijkstraSeamCarver(p);
+		SeamCarver sc = new DPSeamCarving(p);
 		int[] hseam = sc.findHorizontalSeam();
 		assertTrue(Arrays.equals(hanswer, hseam));
 

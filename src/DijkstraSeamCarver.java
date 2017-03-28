@@ -15,22 +15,6 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		super(pic);
 	}
 
-	// turn coordinate into unique id
-	private int id(int x, int y)
-	{
-		return x * pic.height() + y;
-	}
-
-	private int x(int id)
-	{
-		return id / pic.height();
-	}
-
-	private int y(int id)
-	{
-		return id % pic.height();
-	}
-
 	private double energy(int id)
 	{
 		return energy(x(id), y(id));
@@ -175,7 +159,7 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 			if (isInBound(x + 1, y + 1))
 				relax(id, id(x + 1, y + 1), dist, from, energy(x, y + 1));
 			if (isInBound(x + 1, y))
-				relax(id, id(x + 1, y), dist, from, energy(x, y));
+				relax(id, id(x + 1, y), 	dist, from, energy(x, y));
 			if (isInBound(x + 1, y - 1))
 				relax(id, id(x + 1, y - 1), dist, from, energy(x, y - 1));
 		}

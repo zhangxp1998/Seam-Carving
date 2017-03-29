@@ -11,13 +11,19 @@
  *
  ******************************************************************************/
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
 
 public class ResizeDemo
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		if (args.length != 3)
 		{
@@ -30,7 +36,13 @@ public class ResizeDemo
 		int removeRows = Integer.parseInt(args[2]);
 
 		StdOut.printf("image is %d columns by %d rows\n", inputImg.width(), inputImg.height());
-		SeamCarver sc = new DPSeamCarving(inputImg);
+
+		Scanner in = new Scanner(System.in);
+		in.nextLine();
+		in.close();
+
+		System.out.println("Start carving...");
+		SeamCarver sc = new DPSeamCarving(ImageIO.read(new File(args[0])));
 
 		Stopwatch sw = new Stopwatch();
 
@@ -45,6 +57,7 @@ public class ResizeDemo
 			int[] verticalSeam = sc.findVerticalSeam();
 			sc.removeVerticalSeam(verticalSeam);
 		}
+		System.out.println("Carving Done!");
 		Picture outputImg = sc.picture();
 
 		StdOut.printf("new image size is %d columns by %d rows\n", sc.width(), sc.height());

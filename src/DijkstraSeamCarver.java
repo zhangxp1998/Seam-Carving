@@ -19,19 +19,20 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 		return energy(x(id), y(id));
 	}
 
-//	private void relax(int cur, int next, double[][] dist, int[][] from, double edgeWeight)
-//	{
-//		double curCost = dist[y(cur)][x(cur)];
-//		double oldCost = dist[y(next)][x(next)];
-//
-//		if (curCost + edgeWeight < oldCost)
-//		{
-//			dist[y(next)][x(next)] = curCost + edgeWeight;
-//			// dist.put(next, curCost + edgeWeight);
-//			from[y(next)][x(next)] = cur;
-//			// from.put(next, cur);
-//		}
-//	}
+	// private void relax(int cur, int next, double[][] dist, int[][] from,
+	// double edgeWeight)
+	// {
+	// double curCost = dist[y(cur)][x(cur)];
+	// double oldCost = dist[y(next)][x(next)];
+	//
+	// if (curCost + edgeWeight < oldCost)
+	// {
+	// dist[y(next)][x(next)] = curCost + edgeWeight;
+	// // dist.put(next, curCost + edgeWeight);
+	// from[y(next)][x(next)] = cur;
+	// // from.put(next, cur);
+	// }
+	// }
 
 	private DirectedEdge[] dijkstra(EdgeWeightedDigraph G, int s, int t)
 	{

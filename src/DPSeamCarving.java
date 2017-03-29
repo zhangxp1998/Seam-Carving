@@ -1,9 +1,15 @@
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import edu.princeton.cs.algs4.Picture;
 
 public class DPSeamCarving extends SeamCarver
 {
+	public DPSeamCarving(BufferedImage pic)
+	{
+		super(pic);
+	}
+
 	public DPSeamCarving(Picture pic)
 	{
 		super(pic);
@@ -22,8 +28,8 @@ public class DPSeamCarving extends SeamCarver
 
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
-		final int H = pic.height();
-		final int W = pic.width();
+		final int H = pic.getHeight();
+		final int W = pic.getWidth();
 
 		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);
@@ -85,8 +91,8 @@ public class DPSeamCarving extends SeamCarver
 
 	public int[] findVerticalSeam() // sequence of indices for vertical seam
 	{
-		final int H = pic.height();
-		final int W = pic.width();
+		final int H = pic.getHeight();
+		final int W = pic.getWidth();
 
 		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);

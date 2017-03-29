@@ -2,13 +2,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarverTest
 {
@@ -22,7 +23,6 @@ public class SeamCarverTest
 
 	private void testSeamFinding(String filename) throws FileNotFoundException
 	{
-		Picture p = new Picture(filename);
 		String solution = filename.replaceAll(".png", ".printseams.txt");
 		File solutionFile = new File(solution);
 		assertTrue(String.format("Solution file for %s not found!", filename), solutionFile.exists());
@@ -68,12 +68,20 @@ public class SeamCarverTest
 
 		in.close();
 
-		SeamCarver sc = new DPSeamCarving(p);
-		int[] hseam = sc.findHorizontalSeam();
-		assertTrue(Arrays.equals(hanswer, hseam));
+		SeamCarver sc;
+		try
+		{
+			sc = new DPSeamCarving(ImageIO.read(new File(filename)));
+			int[] hseam = sc.findHorizontalSeam();
+			assertTrue(Arrays.equals(hanswer, hseam));
 
-		int[] vseam = sc.findVerticalSeam();
-		assertTrue(Arrays.equals(vanswer, vseam));
+			int[] vseam = sc.findVerticalSeam();
+			assertTrue(Arrays.equals(vanswer, vseam));
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -150,13 +158,8 @@ public class SeamCarverTest
 	}
 
 	@Test
-	public void testFindSeamBigPicture()
+	public void testFindSeamBigPicture() throws FileNotFoundException
 	{
-		Picture p = new Picture(home + "/Downloads/seamCarving/chameleon.png");
-		SeamCarver sc = new DPSeamCarving(p);
-		int[] hseam = sc.findHorizontalSeam();
-		System.out.println(hseam);
-		int[] vseam = sc.findVerticalSeam();
-		System.out.println(vseam);
+		testSeamFinding(home + "/Downloads/seamCarving/chameleon.png");
 	}
 }

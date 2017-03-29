@@ -32,6 +32,11 @@
  *
  ******************************************************************************/
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -65,7 +70,7 @@ public class PrintSeams
 		StdOut.println();
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		Picture picture = new Picture(args[0]);
 		StdOut.printf("%s (%d-by-%d image)\n", args[0], picture.width(), picture.height());
@@ -74,7 +79,7 @@ public class PrintSeams
 		StdOut.println("The asterisks denote a minimum energy vertical or horizontal seam.");
 		StdOut.println();
 
-		SeamCarver carver = new DPSeamCarving(picture);
+		SeamCarver carver = new DPSeamCarving(ImageIO.read(new File(args[0])));
 
 		StdOut.printf("Vertical seam: { ");
 		int[] verticalSeam = carver.findVerticalSeam();

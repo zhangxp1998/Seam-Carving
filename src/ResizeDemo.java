@@ -71,10 +71,12 @@ public class ResizeDemo
                 	@Override
                     public void componentResized(ComponentEvent e) {
                         System.out.println(e);
+                        //Get the source Component
                         ImageComponent comp = (ImageComponent) e.getSource();
                         Image curImg = inputImg.getBufferedImage();
+                        //New SeamCarving Instance
                         SeamCarver sc = new DPSeamCarver((BufferedImage) curImg);
-                        
+                        //Get the rows and Cols difference between the origin and current
                         int rRow = inputImg.height() - comp.getHeight();
                         int rCol = inputImg.width() - comp.getWidth();
                         
@@ -91,6 +93,7 @@ public class ResizeDemo
                 			sc.removeVerticalSeam(verticalSeam);
                 			System.out.println(i + ": " + Runtime.getRuntime().totalMemory() / 100_0000.0F);
                 		}
+                		//Set the new Image and repaint
                 		comp.setImage(sc.picture().getBufferedImage());
                 		comp.repaint();
                     }

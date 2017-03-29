@@ -21,7 +21,6 @@ import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
 
-
 public class ResizeDemo
 {
 	public static void main(String[] args) throws IOException
@@ -51,14 +50,17 @@ public class ResizeDemo
 		{
 			int[] horizontalSeam = sc.findHorizontalSeam();
 			sc.removeHorizontalSeam(horizontalSeam);
+			System.out.println(i + ": " + Runtime.getRuntime().totalMemory() / 100_0000.0F);
 		}
 
 		for (int i = 0; i < removeColumns; i++)
 		{
 			int[] verticalSeam = sc.findVerticalSeam();
 			sc.removeVerticalSeam(verticalSeam);
+			System.out.println(i + ": " + Runtime.getRuntime().totalMemory() / 100_0000.0F);
 		}
 		System.out.println("Carving Done!");
+
 		Picture outputImg = sc.picture();
 
 		StdOut.printf("new image size is %d columns by %d rows\n", sc.width(), sc.height());

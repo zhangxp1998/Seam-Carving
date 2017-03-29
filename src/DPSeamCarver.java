@@ -5,9 +5,14 @@ import edu.princeton.cs.algs4.Picture;
 
 public class DPSeamCarver extends SeamCarver
 {
+	private int[] seam;
+	private int[] dist;
+
 	public DPSeamCarver(BufferedImage pic)
 	{
 		super(pic);
+		seam = new int[width()];
+		dist = new int[width() * height() + 1];
 	}
 
 	public DPSeamCarver(Picture pic)
@@ -30,8 +35,9 @@ public class DPSeamCarver extends SeamCarver
 	{
 		final int H = height();
 		final int W = width();
-
-		int[] dist = new int[H * W + 1];
+		if (dist.length < H * W + 1)
+			dist = new int[H * W + 1];
+		// int[] dist = new int[H * W + 1];
 		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		// The artificial end point
@@ -79,7 +85,9 @@ public class DPSeamCarver extends SeamCarver
 			}
 		}
 
-		int[] seam = new int[W];
+		if (seam.length != W)
+			seam = new int[W];
+		// int[] seam = new int[W];
 		int cur = t;
 		for (int i = W - 1; i >= 0; i--)
 		{
@@ -94,7 +102,9 @@ public class DPSeamCarver extends SeamCarver
 		final int H = height();
 		final int W = width();
 
-		int[] dist = new int[H * W + 1];
+		if (dist.length < H * W + 1)
+			dist = new int[H * W + 1];
+		// int[] dist = new int[H * W + 1];
 		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		// The artificial end point
@@ -143,7 +153,9 @@ public class DPSeamCarver extends SeamCarver
 		}
 
 		// Reconstruct the path
-		int[] seam = new int[H];
+		if (seam.length != H)
+			seam = new int[H];
+		// int[] seam = new int[H];
 		int cur = t;
 		for (int i = H - 1; i >= 0; i--)
 		{

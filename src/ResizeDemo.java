@@ -21,6 +21,7 @@ import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
 
+
 public class ResizeDemo
 {
 	public static void main(String[] args) throws IOException
@@ -42,7 +43,7 @@ public class ResizeDemo
 		in.close();
 
 		System.out.println("Start carving...");
-		SeamCarver sc = new DijkstraSeamCarver(ImageIO.read(new File(args[0])));
+		SeamCarver sc = new DPSeamCarver(ImageIO.read(new File(args[0])));
 
 		Stopwatch sw = new Stopwatch();
 

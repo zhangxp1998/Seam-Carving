@@ -15,10 +15,10 @@ public class DPSeamCarver extends SeamCarver
 		super(pic);
 	}
 
-	private void relax(int cur, int next, double[] dist, int[] from, double edgeWeight)
+	private static void relax(int cur, int next, int[] dist, int[] from, int edgeWeight)
 	{
-		double curCost = dist[cur];
-		double oldCost = dist[next];
+		int curCost = dist[cur];
+		int oldCost = dist[next];
 		if (curCost + edgeWeight < oldCost)
 		{
 			dist[next] = curCost + edgeWeight;
@@ -31,8 +31,8 @@ public class DPSeamCarver extends SeamCarver
 		final int H = height();
 		final int W = width();
 
-		double[] dist = new double[H * W + 1];
-		Arrays.fill(dist, Double.MAX_VALUE);
+		int[] dist = new int[H * W + 1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		// The artificial end point
 		int t = H * W;
@@ -49,7 +49,7 @@ public class DPSeamCarver extends SeamCarver
 			dist[id] = energy(0, i);
 		}
 
-		double[] lut = new double[H];
+		int[] lut = new int[H];
 		for (int x = 0; x < W; x++)
 		{
 			if (x + 1 < W)
@@ -94,8 +94,8 @@ public class DPSeamCarver extends SeamCarver
 		final int H = height();
 		final int W = width();
 
-		double[] dist = new double[H * W + 1];
-		Arrays.fill(dist, Double.MAX_VALUE);
+		int[] dist = new int[H * W + 1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		// The artificial end point
 		int t = H * W;
@@ -111,7 +111,7 @@ public class DPSeamCarver extends SeamCarver
 			dist[id] = energy(i, 0);
 		}
 
-		double[] lut = new double[W];
+		int[] lut = new int[W];
 		for (int y = 0; y < H; y++)
 		{
 			if (y + 1 < H)

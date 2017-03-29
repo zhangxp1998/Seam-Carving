@@ -120,19 +120,38 @@ public abstract class SeamCarver
 		return (rgb >> 0) & 0xFF;
 	}
 
-	private double getDelta(int c1, int c2)
+	private static int pow(int base, int exp)
 	{
-		return Math.pow(r(c1) - r(c2), 2) + Math.pow(g(c1) - g(c2), 2) + Math.pow(b(c1) - b(c2), 2);
+		if (exp == 0)
+			return 1;
+		else if (exp == 1)
+			return base;
+
+		int p = base;
+		int r = 1;
+		while (exp > 1)
+		{
+			if ((exp & 1) == 1)
+				r *= p;
+			p *= p;
+			exp >>= 1;
+		}
+		return p * r;
 	}
 
-	public double energy(int x, int y) // energy of pixel at column x and row y
+	private static int getDelta(int c1, int c2)
+	{
+		return pow(r(c1) - r(c2), 2) + pow(g(c1) - g(c2), 2) + pow(b(c1) - b(c2), 2);
+	}
+
+	public int energy(int x, int y) // energy of pixel at column x and row y
 	{
 		if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
-			return 1000.0D;
+			return 1000;
 
-		double dx = getDelta(rgb(x - 1, y), rgb(x + 1, y));
-		double dy = getDelta(rgb(x, y - 1), rgb(x, y + 1));
-		return Math.sqrt(dx + dy);
+		int dx = getDelta(rgb(x - 1, y), rgb(x + 1, y));
+		int dy = getDelta(rgb(x, y - 1), rgb(x, y + 1));
+		return dx + dy;
 	}
 
 	public abstract int[] findHorizontalSeam(); // sequence of indices for
@@ -162,7 +181,7 @@ public abstract class SeamCarver
 				rgb[y * W + x] = rgb(x, y);
 
 			for (int y = pivot; y < H; y++)
-				rgb[y * W + x] = rgb(x, y+1);
+				rgb[y * W + x] = rgb(x, y + 1);
 		}
 		width = W;
 		height = H;

@@ -71,7 +71,7 @@ public class SeamCarverTest
 		SeamCarver sc;
 		try
 		{
-			sc = new DPSeamCarving(ImageIO.read(new File(filename)));
+			sc = new DPSeamCarver(ImageIO.read(new File(filename)));
 			int[] hseam = sc.findHorizontalSeam();
 			assertTrue(Arrays.equals(hanswer, hseam));
 

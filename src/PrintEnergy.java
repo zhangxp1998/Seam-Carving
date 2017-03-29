@@ -21,7 +21,7 @@ public class PrintEnergy
 		Picture picture = new Picture(args[0]);
 		StdOut.printf("image is %d pixels wide by %d pixels high.\n", picture.width(), picture.height());
 
-		SeamCarver sc = new DPSeamCarving(picture);
+		SeamCarver sc = new DPSeamCarver(picture);
 
 		StdOut.printf("Printing energy calculated for each pixel.\n");
 

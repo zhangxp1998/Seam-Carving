@@ -42,7 +42,7 @@ public class ResizeDemo
 		in.close();
 
 		System.out.println("Start carving...");
-		SeamCarver sc = new DPSeamCarving(ImageIO.read(new File(args[0])));
+		SeamCarver sc = new DijkstraSeamCarver(ImageIO.read(new File(args[0])));
 
 		Stopwatch sw = new Stopwatch();
 

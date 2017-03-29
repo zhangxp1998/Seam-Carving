@@ -3,14 +3,14 @@ import java.util.Arrays;
 
 import edu.princeton.cs.algs4.Picture;
 
-public class DPSeamCarving extends SeamCarver
+public class DPSeamCarver extends SeamCarver
 {
-	public DPSeamCarving(BufferedImage pic)
+	public DPSeamCarver(BufferedImage pic)
 	{
 		super(pic);
 	}
 
-	public DPSeamCarving(Picture pic)
+	public DPSeamCarver(Picture pic)
 	{
 		super(pic);
 	}

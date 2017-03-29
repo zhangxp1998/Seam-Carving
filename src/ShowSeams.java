@@ -37,7 +37,7 @@ public class ShowSeams
 		Picture picture = new Picture(args[0]);
 		StdOut.printf("image is %d columns by %d rows\n", picture.width(), picture.height());
 		picture.show();
-		SeamCarver sc = new DPSeamCarving(picture);
+		SeamCarver sc = new DPSeamCarver(picture);
 
 		StdOut.printf("Displaying horizontal seam calculated.\n");
 		showHorizontalSeam(sc);

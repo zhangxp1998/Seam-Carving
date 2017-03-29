@@ -1,3 +1,4 @@
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -12,6 +13,11 @@ public class DijkstraSeamCarver extends SeamCarver implements Comparator<Integer
 	public DijkstraSeamCarver(Picture pic)
 	{
 		super(pic);
+	}
+	
+	public DijkstraSeamCarver(BufferedImage pic)
+	{
+		super(new Picture(pic));
 	}
 
 	private double energy(int id)

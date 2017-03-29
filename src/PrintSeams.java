@@ -79,7 +79,7 @@ public class PrintSeams
 		StdOut.println("The asterisks denote a minimum energy vertical or horizontal seam.");
 		StdOut.println();
 
-		SeamCarver carver = new DPSeamCarving(ImageIO.read(new File(args[0])));
+		SeamCarver carver = new DPSeamCarver(ImageIO.read(new File(args[0])));
 
 		StdOut.printf("Vertical seam: { ");
 		int[] verticalSeam = carver.findVerticalSeam();

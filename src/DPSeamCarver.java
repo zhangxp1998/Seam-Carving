@@ -7,12 +7,14 @@ public class DPSeamCarver extends SeamCarver
 {
 	private int[] seam;
 	private int[] dist;
+	private int[] from;
 
 	public DPSeamCarver(BufferedImage pic)
 	{
 		super(pic);
 		seam = new int[width()];
 		dist = new int[width() * height() + 1];
+		from = new int[width() * height() + 1];
 	}
 
 	public DPSeamCarver(Picture pic)
@@ -43,7 +45,8 @@ public class DPSeamCarver extends SeamCarver
 		// The artificial end point
 		int t = H * W;
 
-		int[] from = new int[H * W + 1];
+		if (from.length < H * W + 1)
+			from = new int[H * W + 1];
 
 		// An artificial starting point
 		int start = id(-1, -1);
@@ -110,7 +113,8 @@ public class DPSeamCarver extends SeamCarver
 		// The artificial end point
 		int t = H * W;
 
-		int[] from = new int[H * W + 1];
+		if (from.length < H * W + 1)
+			from = new int[H * W + 1];
 
 		int start = id(-1, -1);
 

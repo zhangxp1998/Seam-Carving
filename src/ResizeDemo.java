@@ -50,14 +50,16 @@ public class ResizeDemo
 		{
 			int[] horizontalSeam = sc.findHorizontalSeam();
 			sc.removeHorizontalSeam(horizontalSeam);
-			System.out.println(i + ": " + Runtime.getRuntime().totalMemory() / 100_0000.0F);
+			// System.out.println(i + ": " + Runtime.getRuntime().totalMemory()
+			// / 100_0000.0F);
 		}
 
 		for (int i = 0; i < removeColumns; i++)
 		{
 			int[] verticalSeam = sc.findVerticalSeam();
 			sc.removeVerticalSeam(verticalSeam);
-			System.out.println(i + ": " + Runtime.getRuntime().totalMemory() / 100_0000.0F);
+			// System.out.println(i + ": " + Runtime.getRuntime().totalMemory()
+			// / 100_0000.0F);
 		}
 		System.out.println("Carving Done!");
 

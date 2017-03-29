@@ -6,13 +6,21 @@ import edu.princeton.cs.algs4.Picture;
 public class DPSeamCarver extends SeamCarver
 {
 	private int[] seam;
+
+	// distance from source to vertex specified by index
 	private int[] dist;
+
+	// a map that traces back the shortest path
+	private int[] from;
 
 	public DPSeamCarver(BufferedImage pic)
 	{
 		super(pic);
 		seam = new int[width()];
+		
+		// +1 because we need the artificial end point
 		dist = new int[width() * height() + 1];
+		from = new int[width() * height() + 1];
 	}
 
 	public DPSeamCarver(Picture pic)
@@ -35,15 +43,22 @@ public class DPSeamCarver extends SeamCarver
 	{
 		final int H = height();
 		final int W = width();
-		if (dist.length < H * W + 1)
-			dist = new int[H * W + 1];
+
+		// The artificial end point
+		final int t = H * W;
+
+		if (dist.length < t + 1)
+			dist = new int[t + 1];
+		else if (dist.length >> 1 > t + 1)
+			dist = new int[t + 1];
+
 		// int[] dist = new int[H * W + 1];
 		Arrays.fill(dist, Integer.MAX_VALUE);
 
-		// The artificial end point
-		int t = H * W;
-
-		int[] from = new int[H * W + 1];
+		if (from.length < t + 1)
+			from = new int[t + 1];
+		else if (from.length >> 1 > t + 1)
+			from = new int[t + 1];
 
 		// An artificial starting point
 		int start = id(-1, -1);
@@ -102,15 +117,21 @@ public class DPSeamCarver extends SeamCarver
 		final int H = height();
 		final int W = width();
 
-		if (dist.length < H * W + 1)
-			dist = new int[H * W + 1];
+		// The artificial end point
+		final int t = H * W;
+
+		if (dist.length < t + 1)
+			dist = new int[t + 1];
+		else if (dist.length >> 1 > t + 1)
+			dist = new int[t + 1];
+
 		// int[] dist = new int[H * W + 1];
 		Arrays.fill(dist, Integer.MAX_VALUE);
 
-		// The artificial end point
-		int t = H * W;
-
-		int[] from = new int[H * W + 1];
+		if (from.length < t + 1)
+			from = new int[t + 1];
+		else if (from.length >> 1 > t + 1)
+			from = new int[t + 1];
 
 		int start = id(-1, -1);
 

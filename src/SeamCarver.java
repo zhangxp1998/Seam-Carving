@@ -15,7 +15,7 @@ public abstract class SeamCarver
 		height = pic.getHeight();
 		width = pic.getWidth();
 
-		rgb = new int[pic.getHeight() * pic.getWidth()];
+		rgb = new int[pic.getHeight() * pic.getWidth()+1];//+1
 		pic.getRGB(0, 0, pic.getWidth(), pic.getHeight(), rgb, 0, pic.getWidth());
 	}
 
@@ -167,8 +167,8 @@ public abstract class SeamCarver
 		if (seam.length != width())
 			throw new IllegalArgumentException();
 
-		final int H = height();
-		final int W = width() - 1;
+		final int H = height() - 1;
+		final int W = width();
 		for (int x = 0; x < W; x++)
 		{
 			int pivot = seam[x];

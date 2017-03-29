@@ -28,8 +28,8 @@ public class DPSeamCarving extends SeamCarver
 
 	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
 	{
-		final int H = pic.getHeight();
-		final int W = pic.getWidth();
+		final int H = height();
+		final int W = width();
 
 		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);
@@ -91,8 +91,8 @@ public class DPSeamCarving extends SeamCarver
 
 	public int[] findVerticalSeam() // sequence of indices for vertical seam
 	{
-		final int H = pic.getHeight();
-		final int W = pic.getWidth();
+		final int H = height();
+		final int W = width();
 
 		double[] dist = new double[H * W + 1];
 		Arrays.fill(dist, Double.MAX_VALUE);

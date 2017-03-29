@@ -4,20 +4,29 @@ import edu.princeton.cs.algs4.Picture;
 
 public abstract class SeamCarver
 {
-	protected BufferedImage pic;
+	private int height;
+	private int width;
+	int[] rgb;
 
 	public SeamCarver(BufferedImage pic)
 	{
 		if (pic == null)
 			throw new NullPointerException();
-		this.pic = pic;
+		height = pic.getHeight();
+		width = pic.getWidth();
+
+		rgb = new int[pic.getHeight() * pic.getWidth()];
+		pic.getRGB(0, 0, pic.getWidth(), pic.getHeight(), rgb, 0, pic.getWidth());
 	}
-	
+
 	public SeamCarver(Picture pic)
 	{
-		if (pic == null)
-			throw new NullPointerException();
-		this.pic = pic.getBufferedImage();
+		this(pic.getBufferedImage());
+	}
+
+	protected int rgb(int x, int y)
+	{
+		return rgb[y * width + x];
 	}
 
 	/**
@@ -31,7 +40,7 @@ public abstract class SeamCarver
 	 */
 	protected int id(int x, int y)
 	{
-		return x * pic.getHeight() + y;
+		return x * height + y;
 	}
 
 	/**
@@ -42,7 +51,7 @@ public abstract class SeamCarver
 	 */
 	protected int x(int id)
 	{
-		return id / pic.getHeight();
+		return id / height;
 	}
 
 	/**
@@ -53,27 +62,29 @@ public abstract class SeamCarver
 	 */
 	protected int y(int id)
 	{
-		return id % pic.getHeight();
+		return id % height;
 	}
 
 	public Picture picture()
 	{
-		return new Picture(pic);
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		bi.setRGB(0, 0, width, height, rgb, 0, width);
+		return new Picture(bi);
 	}
 
 	public int width()
 	{
-		return pic.getWidth();
+		return width;
 	}
 
 	public int height()
 	{
-		return pic.getHeight();
+		return height;
 	}
 
 	protected boolean isInBound(int x, int y)
 	{
-		return x >= 0 && x < pic.getWidth() && y >= 0 && y < pic.getHeight();
+		return x >= 0 && x < width && y >= 0 && y < height;
 	}
 
 	/**
@@ -119,8 +130,8 @@ public abstract class SeamCarver
 		if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
 			return 1000.0D;
 
-		double dx = getDelta(pic.getRGB(x - 1, y), pic.getRGB(x + 1, y));
-		double dy = getDelta(pic.getRGB(x, y - 1), pic.getRGB(x, y + 1));
+		double dx = getDelta(rgb(x - 1, y), rgb(x + 1, y));
+		double dy = getDelta(rgb(x, y - 1), rgb(x, y + 1));
 		return Math.sqrt(dx + dy);
 	}
 
@@ -134,48 +145,52 @@ public abstract class SeamCarver
 	public void removeHorizontalSeam(int[] seam) // remove horizontal seam from
 	// current picture
 	{
-		if (seam.length != pic.getWidth())
+		if (seam.length != width())
 			throw new IllegalArgumentException();
 
-		BufferedImage p = new BufferedImage(pic.getWidth() - 1, pic.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage p = new BufferedImage(width() - 1, height(), BufferedImage.TYPE_INT_RGB);
 		for (int x = 0; x < p.getWidth(); x++)
 		{
 			int pivot = seam[x];
 			if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
 				throw new IllegalArgumentException();
-			if (pivot < 0 || pivot >= pic.getHeight())
+			if (pivot < 0 || pivot >= height())
 				throw new IllegalArgumentException();
 
 			for (int y = 0; y < pivot; y++)
-				p.setRGB(x, y, pic.getRGB(x, y));
+				p.setRGB(x, y, rgb(x, y));
 
 			for (int y = pivot; y < p.getHeight(); y++)
-				p.setRGB(x, y, pic.getRGB(x, y + 1));
+				p.setRGB(x, y, rgb(x, y + 1));
 		}
-		pic = p;
+		p.getRGB(0, 0, p.getWidth(), p.getHeight(), rgb, 0, p.getWidth());
+		width = p.getWidth();
+		height = p.getHeight();
 	}
 
 	public void removeVerticalSeam(int[] seam) // remove vertical seam from
 	// current picture
 	{
-		if (seam.length != pic.getHeight())
+		if (seam.length != height())
 			throw new IllegalArgumentException();
 
-		BufferedImage p = new BufferedImage(pic.getWidth() - 1, pic.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage p = new BufferedImage(width() - 1, height(), BufferedImage.TYPE_INT_RGB);
 		for (int y = 0; y < p.getHeight(); y++)
 		{
 			int pivot = seam[y];
 			if (y > 0 && Math.abs(seam[y - 1] - pivot) >= 2)
 				throw new IllegalArgumentException();
-			if (pivot < 0 || pivot >= pic.getWidth())
+			if (pivot < 0 || pivot >= width())
 				throw new IllegalArgumentException();
 
 			for (int x = 0; x < pivot; x++)
-				p.setRGB(x, y, pic.getRGB(x, y));
+				p.setRGB(x, y, rgb(x, y));
 
 			for (int x = pivot; x < p.getWidth(); x++)
-				p.setRGB(x, y, pic.getRGB(x + 1, y));
+				p.setRGB(x, y, rgb(x + 1, y));
 		}
-		pic = p;
+		p.getRGB(0, 0, p.getWidth(), p.getHeight(), rgb, 0, p.getWidth());
+		width = p.getWidth();
+		height = p.getHeight();
 	}
 }

@@ -150,22 +150,20 @@ public abstract class SeamCarver
 
 		final int H = height();
 		final int W = width() - 1;
-		int[] tmp = new int[W * H];
 		for (int x = 0; x < W; x++)
 		{
 			int pivot = seam[x];
-			if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
-				throw new IllegalArgumentException();
-			if (pivot < 0 || pivot >= height())
-				throw new IllegalArgumentException();
+			// if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
+			// throw new IllegalArgumentException();
+			// if (pivot < 0 || pivot >= height())
+			// throw new IllegalArgumentException();
 
 			for (int y = 0; y < pivot; y++)
-				tmp[y * W + x] = rgb(x, y);
+				rgb[y * W + x] = rgb(x, y);
 
 			for (int y = pivot; y < H; y++)
-				tmp[y * W + x] = rgb(x, y+1);
+				rgb[y * W + x] = rgb(x, y+1);
 		}
-		rgb = tmp;
 		width = W;
 		height = H;
 	}
@@ -178,22 +176,20 @@ public abstract class SeamCarver
 
 		final int H = height();
 		final int W = width() - 1;
-		int[] tmp = new int[W * H];
 		for (int y = 0; y < H; y++)
 		{
 			int pivot = seam[y];
-			if (y > 0 && Math.abs(seam[y - 1] - pivot) >= 2)
-				throw new IllegalArgumentException();
-			if (pivot < 0 || pivot >= width())
-				throw new IllegalArgumentException();
+			// if (y > 0 && Math.abs(seam[y - 1] - pivot) >= 2)
+			// throw new IllegalArgumentException();
+			// if (pivot < 0 || pivot >= width())
+			// throw new IllegalArgumentException();
 
 			for (int x = 0; x < pivot; x++)
-				tmp[y * W + x] = rgb(x, y);
+				rgb[y * W + x] = rgb(x, y);
 
 			for (int x = pivot; x < W; x++)
-				tmp[y * W + x] = rgb(x + 1, y);
+				rgb[y * W + x] = rgb(x + 1, y);
 		}
-		rgb = tmp;
 		width = W;
 		height = H;
 	}

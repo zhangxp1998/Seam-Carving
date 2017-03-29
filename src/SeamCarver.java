@@ -148,8 +148,10 @@ public abstract class SeamCarver
 		if (seam.length != width())
 			throw new IllegalArgumentException();
 
-		BufferedImage p = new BufferedImage(width() - 1, height(), BufferedImage.TYPE_INT_RGB);
-		for (int x = 0; x < p.getWidth(); x++)
+		final int H = height();
+		final int W = width() - 1;
+		int[] tmp = new int[W * H];
+		for (int x = 0; x < W; x++)
 		{
 			int pivot = seam[x];
 			if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
@@ -158,14 +160,14 @@ public abstract class SeamCarver
 				throw new IllegalArgumentException();
 
 			for (int y = 0; y < pivot; y++)
-				p.setRGB(x, y, rgb(x, y));
+				tmp[y * W + x] = rgb(x, y);
 
-			for (int y = pivot; y < p.getHeight(); y++)
-				p.setRGB(x, y, rgb(x, y + 1));
+			for (int y = pivot; y < H; y++)
+				tmp[y * W + x] = rgb(x, y+1);
 		}
-		p.getRGB(0, 0, p.getWidth(), p.getHeight(), rgb, 0, p.getWidth());
-		width = p.getWidth();
-		height = p.getHeight();
+		rgb = tmp;
+		width = W;
+		height = H;
 	}
 
 	public void removeVerticalSeam(int[] seam) // remove vertical seam from
@@ -174,8 +176,10 @@ public abstract class SeamCarver
 		if (seam.length != height())
 			throw new IllegalArgumentException();
 
-		BufferedImage p = new BufferedImage(width() - 1, height(), BufferedImage.TYPE_INT_RGB);
-		for (int y = 0; y < p.getHeight(); y++)
+		final int H = height();
+		final int W = width() - 1;
+		int[] tmp = new int[W * H];
+		for (int y = 0; y < H; y++)
 		{
 			int pivot = seam[y];
 			if (y > 0 && Math.abs(seam[y - 1] - pivot) >= 2)
@@ -184,13 +188,13 @@ public abstract class SeamCarver
 				throw new IllegalArgumentException();
 
 			for (int x = 0; x < pivot; x++)
-				p.setRGB(x, y, rgb(x, y));
+				tmp[y * W + x] = rgb(x, y);
 
-			for (int x = pivot; x < p.getWidth(); x++)
-				p.setRGB(x, y, rgb(x + 1, y));
+			for (int x = pivot; x < W; x++)
+				tmp[y * W + x] = rgb(x + 1, y);
 		}
-		p.getRGB(0, 0, p.getWidth(), p.getHeight(), rgb, 0, p.getWidth());
-		width = p.getWidth();
-		height = p.getHeight();
+		rgb = tmp;
+		width = W;
+		height = H;
 	}
 }

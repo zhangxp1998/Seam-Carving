@@ -36,7 +36,7 @@ public class ResizeDemo
 		int removeRows = Integer.parseInt(args[2]);
 
 		StdOut.printf("image is %d columns by %d rows\n", inputImg.width(), inputImg.height());
-
+		System.out.println("Press enter to start carving...");
 		Scanner in = new Scanner(System.in);
 		in.nextLine();
 		in.close();

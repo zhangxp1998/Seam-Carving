@@ -163,8 +163,6 @@ class ImageComponent extends JComponent{
     }
     public void paintComponent (Graphics g){
         if(image == null) return;
-        int imageWidth = image.getWidth(this);
-        int imageHeight = image.getHeight(this);
 
         g.drawImage(image, 0, 0, this);
 

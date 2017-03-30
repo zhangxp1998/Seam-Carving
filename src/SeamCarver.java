@@ -147,7 +147,7 @@ public abstract class SeamCarver
 	public int energy(int x, int y) // energy of pixel at column x and row y
 	{
 		if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
-			return 1000;
+			return 1_000_000;
 
 		int dx = getDelta(rgb(x - 1, y), rgb(x + 1, y));
 		int dy = getDelta(rgb(x, y - 1), rgb(x, y + 1));

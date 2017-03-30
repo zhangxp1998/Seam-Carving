@@ -149,13 +149,6 @@ class ImageFrame extends JFrame
 		setTitle("ImageTest");
 		setSize(w, h);
 	}
-
-	@Override
-	public void paintComponents(Graphics g)
-	{
-		super.paintComponents(g);
-
-	}
 }
 
 class ImageComponent extends JComponent

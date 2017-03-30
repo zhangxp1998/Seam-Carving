@@ -70,7 +70,7 @@ public class ResizeDemo
 					@Override
 					public void componentResized(ComponentEvent e)
 					{
-						System.out.println(e);
+//						System.out.println(e);
 						// Get the source Component
 						ImageComponent comp = (ImageComponent) e.getSource();
 						// New SeamCarving Instance

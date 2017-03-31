@@ -24,24 +24,21 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import edu.princeton.cs.algs4.Picture;
-import edu.princeton.cs.algs4.StdOut;
-
 public class ResizeDemo
 {
 	public static void main(String[] args) throws IOException
 	{
 		if (args.length != 3)
 		{
-			StdOut.println("Usage:\njava ResizeDemo [image filename] [num cols to remove] [num rows to remove]");
+			System.out.println("Usage:\njava ResizeDemo [image filename] [num cols to remove] [num rows to remove]");
 			return;
 		}
 
-		Picture inputImg = new Picture(args[0]);
+		BufferedImage inputImg = ImageIO.read(new File(args[0]));
 		// int removeColumns = Integer.parseInt(args[1]);
 		// int removeRows = Integer.parseInt(args[2]);
 
-		StdOut.printf("image is %d columns by %d rows\n", inputImg.width(), inputImg.height());
+		System.out.printf("image is %d columns by %d rows\n", inputImg.getWidth(), inputImg.getHeight());
 		System.out.println("Press enter to start carving...");
 		// Scanner in = new Scanner(System.in);
 		// in.nextLine();
@@ -63,7 +60,7 @@ public class ResizeDemo
 
 			public void run()
 			{
-				ImageFrame frame = new ImageFrame(inputImg.width(), inputImg.height());
+				ImageFrame frame = new ImageFrame(inputImg.getWidth(), inputImg.getHeight());
 				ImageComponent ic = new ImageComponent(img);
 				ic.addComponentListener(new ComponentAdapter()
 				{
@@ -80,17 +77,22 @@ public class ResizeDemo
 						{
 							int[] horizontalSeam = sc.findHorizontalSeam();
 							sc.removeHorizontalSeam(horizontalSeam);
-							// System.out.println(i + ": " +
-							// Runtime.getRuntime().totalMemory() /
-							// 100_0000.0F);
 						}
+						while (sc.height() < comp.getHeight())
+						{
+							int[] horizontalSeam = sc.findHorizontalSeam();
+							sc.insertHorizontalSeam(horizontalSeam);
+						}
+
 						while (sc.width() > comp.getWidth())
 						{
 							int[] verticalSeam = sc.findVerticalSeam();
 							sc.removeVerticalSeam(verticalSeam);
-							// System.out.println(i + ": " +
-							// Runtime.getRuntime().totalMemory() /
-							// 100_0000.0F);
+						}
+						while (sc.width() < comp.getWidth())
+						{
+							int[] verticalSeam = sc.findVerticalSeam();
+							sc.insertVerticalSeam(verticalSeam);
 						}
 						// Set the new Image and repaint
 						comp.setImage(sc.picture().getBufferedImage());
@@ -170,7 +172,6 @@ class ImageComponent extends JComponent
 			return;
 
 		g.drawImage(image, 0, 0, this);
-
 	}
 
 	public Image getImage()

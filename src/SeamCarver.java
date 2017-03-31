@@ -15,7 +15,7 @@ public abstract class SeamCarver
 		height = pic.getHeight();
 		width = pic.getWidth();
 
-		rgb = new int[pic.getHeight() * pic.getWidth()+1];//+1
+		rgb = new int[pic.getHeight() * pic.getWidth() + 1];// +1
 		pic.getRGB(0, 0, pic.getWidth(), pic.getHeight(), rgb, 0, pic.getWidth());
 	}
 
@@ -40,7 +40,7 @@ public abstract class SeamCarver
 	 */
 	protected int id(int x, int y)
 	{
-		return x * height + y;
+		return y * width + x;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public abstract class SeamCarver
 	 */
 	protected int x(int id)
 	{
-		return id / height;
+		return id % width;
 	}
 
 	/**
@@ -62,7 +62,7 @@ public abstract class SeamCarver
 	 */
 	protected int y(int id)
 	{
-		return id % height;
+		return id / width;
 	}
 
 	public Picture picture()
@@ -118,6 +118,11 @@ public abstract class SeamCarver
 	public static int b(int rgb)
 	{
 		return (rgb >> 0) & 0xFF;
+	}
+
+	public static int rgb(int r, int g, int b)
+	{
+		return (r << 16) | (g << 8) | b;
 	}
 
 	private static int pow(int base, int exp)
@@ -209,6 +214,92 @@ public abstract class SeamCarver
 			for (int x = pivot; x < W; x++)
 				rgb[y * W + x] = rgb(x + 1, y);
 		}
+		width = W;
+		height = H;
+	}
+
+	public int average(int x, int y)
+	{
+		int r = 0, g = 0, b = 0;
+		int count = 0;
+		for (int dx = -1; dx <= 1; dx++)
+		{
+			for (int dy = -1; dy <= 1; dy++)
+			{
+				// if (dx == 0 && dy == 0)
+				// continue;
+				if (!isInBound(x + dx, y + dy))
+					continue;
+				int color = rgb(x + dx, y + dy);
+				r += r(color);
+				g += g(color);
+				b += b(color);
+				count++;
+			}
+		}
+		r = Math.min(r / count, 255);
+		g = Math.min(b / count, 255);
+		b = Math.min(g / count, 255);
+		assert r >= 0;
+		assert g >= 0;
+		assert b >= 0;
+		return rgb(r, g, b);
+	}
+
+	public void insertHorizontalSeam(int[] seam) // insert horizontal seam from
+													// current picture
+	{
+		final int H = height() + 1;
+		final int W = width();
+		int[] tmp = rgb;
+		// if (rgb.length < H * W)
+		tmp = new int[H * W];
+
+		for (int x = W - 1; x >= 0; x--)
+		{
+			int pivot = seam[x];
+			// if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
+			// throw new IllegalArgumentException();
+			// if (pivot < 0 || pivot >= height())
+			// throw new IllegalArgumentException();
+			for (int y = H; y > pivot; y--)
+				tmp[y * W + x] = rgb(x, y - 1);
+
+			tmp[pivot * W + x] = average(x, pivot);
+
+			for (int y = pivot - 1; y >= 0; y--)
+				tmp[y * W + x] = rgb(x, y);
+		}
+		rgb = tmp;
+		width = W;
+		height = H;
+	}
+
+	public void insertVerticalSeam(int[] seam) // remove vertical seam from
+												// current picture
+	{
+		final int H = height();
+		final int W = width() + 1;
+		int[] tmp = rgb;
+		// if (rgb.length < H * W)
+		tmp = new int[H * W];
+
+		for (int y = H - 1; y >= 0; y--)
+		{
+			int pivot = seam[y];
+			// if (x > 0 && Math.abs(seam[x - 1] - pivot) >= 2)
+			// throw new IllegalArgumentException();
+			// if (pivot < 0 || pivot >= height())
+			// throw new IllegalArgumentException();
+			for (int x = W - 1; x > pivot; x--)
+				tmp[y * W + x] = rgb(x - 1, y);
+
+			tmp[y * W + pivot] = average(pivot, y);
+
+			for (int x = pivot - 1; x >= 0; x--)
+				tmp[y * W + x] = rgb(x, y);
+		}
+		rgb = tmp;
 		width = W;
 		height = H;
 	}

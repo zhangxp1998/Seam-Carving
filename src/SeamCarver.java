@@ -237,12 +237,12 @@ public abstract class SeamCarver
 				count++;
 			}
 		}
-		r = Math.min(r / count, 255);
-		g = Math.min(b / count, 255);
-		b = Math.min(g / count, 255);
-		assert r >= 0;
-		assert g >= 0;
-		assert b >= 0;
+		r /= count;
+		g /= count;
+		b /= count;
+		assert (r >= 0 && r <= 255);
+		assert (g >= 0 && g <= 255);
+		assert (b >= 0 && b <= 255);
 		return rgb(r, g, b);
 	}
 
@@ -262,7 +262,7 @@ public abstract class SeamCarver
 			// throw new IllegalArgumentException();
 			// if (pivot < 0 || pivot >= height())
 			// throw new IllegalArgumentException();
-			for (int y = H; y > pivot; y--)
+			for (int y = H - 1; y > pivot; y--)
 				tmp[y * W + x] = rgb(x, y - 1);
 
 			tmp[pivot * W + x] = average(x, pivot);

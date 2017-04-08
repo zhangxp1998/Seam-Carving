@@ -222,9 +222,9 @@ public abstract class SeamCarver
 	{
 		int r = 0, g = 0, b = 0;
 		int count = 0;
-		for (int dx = -1; dx <= 1; dx++)
+		for (int dx = -3; dx <= 3; dx++)
 		{
-			for (int dy = -1; dy <= 1; dy++)
+			for (int dy = -3; dy <= 3; dy++)
 			{
 				// if (dx == 0 && dy == 0)
 				// continue;

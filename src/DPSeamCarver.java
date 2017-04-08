@@ -99,7 +99,7 @@ public class DPSeamCarver extends SeamCarver
 				}
 			}
 		}
-
+		assert dist[t] >= 0;
 		if (seam.length != W)
 			seam = new int[W];
 		// int[] seam = new int[W];
@@ -172,7 +172,7 @@ public class DPSeamCarver extends SeamCarver
 				}
 			}
 		}
-
+		assert dist[t] >= 0;
 		// Reconstruct the path
 		if (seam.length != H)
 			seam = new int[H];

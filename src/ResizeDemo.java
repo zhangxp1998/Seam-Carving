@@ -163,6 +163,7 @@ class ImageComponent extends JComponent
 
 	public ImageComponent(Image img)
 	{
+		this.setSize(img.getWidth(null), img.getHeight(null));
 		image = img;
 	}
 

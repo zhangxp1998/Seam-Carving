@@ -60,7 +60,7 @@ public class ResizeDemo
 
 			public void run()
 			{
-				ImageFrame frame = new ImageFrame(inputImg.getWidth() * 1.3, inputImg.getHeight() * 1.3);
+				ImageFrame frame = new ImageFrame(inputImg.getWidth(), inputImg.getHeight());
 				ImageComponent ic = new ImageComponent(img);
 				ic.addComponentListener(new ComponentAdapter()
 				{

@@ -60,7 +60,7 @@ public class ResizeDemo
 
 			public void run()
 			{
-				ImageFrame frame = new ImageFrame(inputImg.getWidth(), inputImg.getHeight());
+				ImageFrame frame = new ImageFrame(inputImg.getWidth() * 1.3, inputImg.getHeight() * 1.3);
 				ImageComponent ic = new ImageComponent(img);
 				ic.addComponentListener(new ComponentAdapter()
 				{
@@ -78,10 +78,17 @@ public class ResizeDemo
 							int[] horizontalSeam = sc.findHorizontalSeam();
 							sc.removeHorizontalSeam(horizontalSeam);
 						}
-						while (sc.height() < comp.getHeight())
+
+						if (sc.height() < comp.getHeight())
 						{
-							int[] horizontalSeam = sc.findHorizontalSeam();
-							sc.insertHorizontalSeam(horizontalSeam);
+							SeamCarver ori = new DPSeamCarver(sc);
+							while (ori.height() < comp.getHeight())
+							{
+								int[] horizontalSeam = sc.findHorizontalSeam();
+								sc.removeHorizontalSeam(horizontalSeam);
+								ori.insertHorizontalSeam(horizontalSeam);
+							}
+							sc = ori;
 						}
 
 						while (sc.width() > comp.getWidth())
@@ -89,10 +96,18 @@ public class ResizeDemo
 							int[] verticalSeam = sc.findVerticalSeam();
 							sc.removeVerticalSeam(verticalSeam);
 						}
-						while (sc.width() < comp.getWidth())
+
+						if (sc.width() < comp.getWidth())
 						{
-							int[] verticalSeam = sc.findVerticalSeam();
-							sc.insertVerticalSeam(verticalSeam);
+							SeamCarver ori = new DPSeamCarver(sc);
+							while (ori.width() < comp.getWidth())
+							{
+								// avoid finding the same seam
+								int[] verticalSeam = sc.findVerticalSeam();
+								sc.removeVerticalSeam(verticalSeam);
+								ori.insertVerticalSeam(verticalSeam);
+							}
+							sc = ori;
 						}
 						// Set the new Image and repaint
 						comp.setImage(sc.picture().getBufferedImage());
@@ -150,6 +165,11 @@ class ImageFrame extends JFrame
 	{
 		setTitle("ImageTest");
 		setSize(w, h);
+	}
+
+	public ImageFrame(double d, double e)
+	{
+		this((int) d, (int) e);
 	}
 }
 

@@ -1,12 +1,13 @@
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 import edu.princeton.cs.algs4.Picture;
 
 public abstract class SeamCarver
 {
-	private int height;
-	private int width;
-	int[] rgb;
+	protected int height;
+	protected int width;
+	protected int[] rgb;
 
 	public SeamCarver(BufferedImage pic)
 	{
@@ -22,6 +23,13 @@ public abstract class SeamCarver
 	public SeamCarver(Picture pic)
 	{
 		this(pic.getBufferedImage());
+	}
+	
+	public SeamCarver(SeamCarver s)
+	{
+		width = s.width;
+		height = s.height;
+		rgb = Arrays.copyOf(s.rgb, s.rgb.length);
 	}
 
 	protected int rgb(int x, int y)
@@ -71,7 +79,14 @@ public abstract class SeamCarver
 		bi.setRGB(0, 0, width, height, rgb, 0, width);
 		return new Picture(bi);
 	}
-
+	
+	public BufferedImage getBufferedImage()
+	{
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		bi.setRGB(0, 0, width, height, rgb, 0, width);
+		return bi;
+	}
+	
 	public int width()
 	{
 		return width;
@@ -222,9 +237,9 @@ public abstract class SeamCarver
 	{
 		int r = 0, g = 0, b = 0;
 		int count = 0;
-		for (int dx = -3; dx <= 3; dx++)
+		for (int dx = -1; dx <= 1; dx++)
 		{
-			for (int dy = -3; dy <= 3; dy++)
+			for (int dy = -1; dy <= 1; dy++)
 			{
 				// if (dx == 0 && dy == 0)
 				// continue;

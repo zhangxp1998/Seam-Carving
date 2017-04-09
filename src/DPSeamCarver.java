@@ -13,19 +13,30 @@ public class DPSeamCarver extends SeamCarver
 	// a map that traces back the shortest path
 	private int[] from;
 
-	public DPSeamCarver(BufferedImage pic)
+	private void initBuffers()
 	{
-		super(pic);
-		seam = new int[width()];
-		
 		// +1 because we need the artificial end point
 		dist = new int[width() * height() + 1];
 		from = new int[width() * height() + 1];
+		seam = new int[width()];
+	}
+
+	public DPSeamCarver(BufferedImage pic)
+	{
+		super(pic);
+		initBuffers();
 	}
 
 	public DPSeamCarver(Picture pic)
 	{
 		super(pic);
+		initBuffers();
+	}
+
+	public DPSeamCarver(SeamCarver s)
+	{
+		super(s);
+		initBuffers();
 	}
 
 	private static void relax(int cur, int next, int[] dist, int[] from, int edgeWeight)
@@ -100,6 +111,7 @@ public class DPSeamCarver extends SeamCarver
 			}
 		}
 		assert dist[t] >= 0;
+		System.out.println(dist[t] * 1.0 / Integer.MAX_VALUE);
 		if (seam.length != W)
 			seam = new int[W];
 		// int[] seam = new int[W];
@@ -173,6 +185,7 @@ public class DPSeamCarver extends SeamCarver
 			}
 		}
 		assert dist[t] >= 0;
+		System.out.println(dist[t] * 1.0 / Integer.MAX_VALUE);
 		// Reconstruct the path
 		if (seam.length != H)
 			seam = new int[H];

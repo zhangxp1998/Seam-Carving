@@ -11,11 +11,15 @@
  *
  ******************************************************************************/
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -53,73 +57,9 @@ public class ResizeDemo
 		 * Will_start
 		 */
 
-		BufferedImage img = ImageIO.read(new File(args[0]));
-		EventQueue.invokeLater(new Runnable()
-		{
-			private SeamCarver sc = new DPSeamCarver(img);
+		ImageFrame frame = new ImageFrame(inputImg);
 
-			public void run()
-			{
-				ImageFrame frame = new ImageFrame(inputImg.getWidth(), inputImg.getHeight());
-				ImageComponent ic = new ImageComponent(img);
-				ic.addComponentListener(new ComponentAdapter()
-				{
-					@Override
-					public void componentResized(ComponentEvent e)
-					{
-						// System.out.println(e);
-						// Get the source Component
-						ImageComponent comp = (ImageComponent) e.getSource();
-						// New SeamCarving Instance
-						// Get the rows and Cols difference between the origin
-						// and current
-						System.out.println((comp.getHeight() - sc.height) + " : " + (comp.getWidth() - sc.width));
-						while (sc.height() > comp.getHeight())
-						{
-							int[] horizontalSeam = sc.findHorizontalSeam();
-							sc.removeHorizontalSeam(horizontalSeam);
-						}
-
-						if (sc.height() < comp.getHeight())
-						{
-							SeamCarver ori = new DPSeamCarver(sc);
-							while (ori.height() < comp.getHeight())
-							{
-								int[] horizontalSeam = sc.findHorizontalSeam();
-								sc.removeHorizontalSeam(horizontalSeam);
-								ori.insertHorizontalSeam(horizontalSeam);
-							}
-							sc = ori;
-						}
-
-						while (sc.width() > comp.getWidth())
-						{
-							int[] verticalSeam = sc.findVerticalSeam();
-							sc.removeVerticalSeam(verticalSeam);
-						}
-
-						if (sc.width() < comp.getWidth())
-						{
-							SeamCarver ori = new DPSeamCarver(sc);
-							while (ori.width() < comp.getWidth())
-							{
-								// avoid finding the same seam
-								int[] verticalSeam = sc.findVerticalSeam();
-								sc.removeVerticalSeam(verticalSeam);
-								ori.insertVerticalSeam(verticalSeam);
-							}
-							sc = ori;
-						}
-						// Set the new Image and repaint
-						comp.setImage(sc.picture().getBufferedImage());
-						comp.repaint();
-					}
-				});
-				frame.add(ic);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setVisible(true);
-			}
-		});
+		frame.setVisible(true);
 
 		/*
 		 * Will_end
@@ -162,15 +102,82 @@ class ImageFrame extends JFrame
 	 */
 	private static final long serialVersionUID = -6626001906329483589L;
 
-	public ImageFrame(int w, int h)
+	public ImageFrame(BufferedImage img)
 	{
 		setTitle("ImageTest");
-		setSize(w, h);
-	}
+		ImageComponent ic = new ImageComponent(img);
+		add(ic);
+		pack();
+		ic.addComponentListener(new ComponentAdapter()
+		{
+			SeamCarver sc = new DPSeamCarver(img);
 
-	public ImageFrame(double d, double e)
-	{
-		this((int) d, (int) e);
+			@Override
+			public void componentResized(ComponentEvent e)
+			{
+				// System.out.println(e);
+				// Get the source Component
+				ImageComponent comp = (ImageComponent) e.getSource();
+				// New SeamCarving Instance
+				// Get the rows and Cols difference between the origin
+				// and current
+				System.out.println((comp.getHeight() - sc.height) + " : " + (comp.getWidth() - sc.width));
+				while (sc.height() > comp.getHeight())
+				{
+					int[] horizontalSeam = sc.findHorizontalSeam();
+					sc.removeHorizontalSeam(horizontalSeam);
+				}
+
+				if (sc.height() < comp.getHeight())
+				{
+					SeamCarver ori = new DPSeamCarver(sc);
+					while (ori.height() < comp.getHeight())
+					{
+						int[] horizontalSeam = sc.findHorizontalSeam();
+						sc.removeHorizontalSeam(horizontalSeam);
+						ori.insertHorizontalSeam(horizontalSeam);
+					}
+					sc = ori;
+				}
+
+				while (sc.width() > comp.getWidth())
+				{
+					int[] verticalSeam = sc.findVerticalSeam();
+					sc.removeVerticalSeam(verticalSeam);
+				}
+
+				if (sc.width() < comp.getWidth())
+				{
+					SeamCarver ori = new DPSeamCarver(sc);
+					while (ori.width() < comp.getWidth())
+					{
+						// avoid finding the same seam
+						int[] verticalSeam = sc.findVerticalSeam();
+						sc.removeVerticalSeam(verticalSeam);
+						ori.insertVerticalSeam(verticalSeam);
+					}
+					sc = ori;
+				}
+				// Set the new Image and repaint
+				comp.setImage(sc.picture().getBufferedImage());
+				comp.repaint();
+			}
+		});
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				if ((e.getKeyCode() == KeyEvent.VK_O) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
+				{
+					System.out.println("woot!");
+				}
+			}
+
+		});
 	}
 }
 
@@ -185,6 +192,7 @@ class ImageComponent extends JComponent
 	public ImageComponent(Image img)
 	{
 		this.setSize(img.getWidth(null), img.getHeight(null));
+		this.setPreferredSize(new Dimension(img.getWidth(null), img.getHeight(null)));
 		image = img;
 	}
 

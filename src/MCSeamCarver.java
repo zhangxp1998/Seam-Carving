@@ -1,9 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-import edu.princeton.cs.algs4.Picture;
-
-public class DPSeamCarver extends SeamCarver
+public class MCSeamCarver extends SeamCarver
 {
 	private int[] seam;
 
@@ -21,25 +19,14 @@ public class DPSeamCarver extends SeamCarver
 		seam = new int[width()];
 	}
 
-	public DPSeamCarver(BufferedImage pic)
+	public MCSeamCarver(BufferedImage pic)
 	{
 		super(pic);
 		initBuffers();
 	}
 
-	public DPSeamCarver(Picture pic)
-	{
-		super(pic);
-		initBuffers();
-	}
-
-	public DPSeamCarver(SeamCarver s)
-	{
-		super(s);
-		initBuffers();
-	}
-
-	public int[] findHorizontalSeam() // sequence of indices for horizontal seam
+	@Override
+	public int[] findHorizontalSeam()
 	{
 		final int H = height();
 		final int W = width();
@@ -75,7 +62,7 @@ public class DPSeamCarver extends SeamCarver
 		{
 			if (x + 1 < W)
 			{
-				// Initialize the energy look up table
+				// Initialize the energy look up table for the next row
 				for (int y = 0; y < lut.length; y++)
 				{
 					lut[y] = energy(x + 1, y);
@@ -112,77 +99,11 @@ public class DPSeamCarver extends SeamCarver
 		return seam;
 	}
 
-	public int[] findVerticalSeam() // sequence of indices for vertical seam
+	@Override
+	public int[] findVerticalSeam()
 	{
-		final int H = height();
-		final int W = width();
-
-		// The artificial end point
-		final int t = H * W;
-
-		if (dist.length < t + 1)
-			dist = new int[t + 1];
-		else if (dist.length >> 1 > t + 1)
-			dist = new int[t + 1];
-
-		// int[] dist = new int[H * W + 1];
-		Arrays.fill(dist, Integer.MAX_VALUE);
-
-		if (from.length < t + 1)
-			from = new int[t + 1];
-		else if (from.length >> 1 > t + 1)
-			from = new int[t + 1];
-
-		int start = id(-1, -1);
-
-		for (int i = 0; i < W; i++)
-		{
-			int id = id(i, 0);
-			from[id] = start;
-			dist[id] = energy(i, 0);
-		}
-
-		int[] lut = new int[W];
-		for (int y = 0; y < H; y++)
-		{
-			if (y + 1 < H)
-			{
-				for (int x = 0; x < lut.length; x++)
-				{
-					lut[x] = energy(x, y + 1);
-				}
-			}
-
-			for (int x = 0; x < W; x++)
-			{
-				int cur = id(x, y);
-				if (y + 1 >= H)
-				{
-					relax(cur, t, dist, from, 0);
-				} else
-				{
-					if (isInBound(x + 1, y + 1))
-						relax(cur, id(x + 1, y + 1), dist, from, lut[x + 1]);
-
-					if (isInBound(x, y + 1))
-						relax(cur, id(x, y + 1), dist, from, lut[x]);
-
-					if (isInBound(x - 1, y + 1))
-						relax(cur, id(x - 1, y + 1), dist, from, lut[x - 1]);
-				}
-			}
-		}
-		assert dist[t] >= 0;
-		// Reconstruct the path
-		if (seam.length != H)
-			seam = new int[H];
-		// int[] seam = new int[H];
-		int cur = t;
-		for (int i = H - 1; i >= 0; i--)
-		{
-			cur = from[cur];
-			seam[i] = x(cur);
-		}
-		return seam;
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

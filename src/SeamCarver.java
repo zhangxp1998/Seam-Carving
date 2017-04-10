@@ -368,7 +368,7 @@ public abstract class SeamCarver
 			// throw new IllegalArgumentException();
 			for (int x = W - 1; x > pivot; x--)
 				tmp[y * W + x] = rgb(x - 1, y);
-			
+
 			// Yes this should be horizontalAverage
 			tmp[y * W + pivot] = horizontalAverage(pivot, y);
 

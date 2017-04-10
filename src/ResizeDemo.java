@@ -11,9 +11,9 @@
  *
  ******************************************************************************/
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
@@ -101,16 +101,19 @@ class ImageFrame extends JFrame
 	 * 
 	 */
 	private static final long serialVersionUID = -6626001906329483589L;
+	private SeamCarver sc;
+	private ImageComponent ic;
 
 	public ImageFrame(BufferedImage img)
 	{
+		sc = new DPSeamCarver(img);
 		setTitle("ImageTest");
-		ImageComponent ic = new ImageComponent(img);
+		ic = new ImageComponent(img);
+
 		add(ic);
 		pack();
 		ic.addComponentListener(new ComponentAdapter()
 		{
-			SeamCarver sc = new DPSeamCarver(img);
 
 			@Override
 			public void componentResized(ComponentEvent e)
@@ -159,7 +162,7 @@ class ImageFrame extends JFrame
 					sc = ori;
 				}
 				// Set the new Image and repaint
-				comp.setImage(sc.picture().getBufferedImage());
+				comp.setImage(sc.getBufferedImage());
 				comp.repaint();
 			}
 		});
@@ -173,7 +176,21 @@ class ImageFrame extends JFrame
 			{
 				if ((e.getKeyCode() == KeyEvent.VK_O) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0))
 				{
-					System.out.println("woot!");
+					FileDialog fd = new FileDialog(ImageFrame.this, "Choose Image", FileDialog.LOAD);
+					fd.setVisible(true);
+					String absPath = fd.getDirectory() + fd.getFile();
+					System.out.println(absPath);
+					try
+					{
+						sc = new DPSeamCarver(ImageIO.read(new File(absPath)));
+						ic.setImage(sc.getBufferedImage());
+						ic.repaint();
+						ImageFrame.this.pack();
+					} catch (IOException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 
@@ -212,6 +229,6 @@ class ImageComponent extends JComponent
 	public void setImage(Image i)
 	{
 		this.image = i;
-		this.revalidate();
+		this.setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
 	}
 }

@@ -73,6 +73,7 @@ public class ResizeDemo
 						// New SeamCarving Instance
 						// Get the rows and Cols difference between the origin
 						// and current
+						System.out.println((comp.getHeight() - sc.height) + " : " + (comp.getWidth() - sc.width));
 						while (sc.height() > comp.getHeight())
 						{
 							int[] horizontalSeam = sc.findHorizontalSeam();

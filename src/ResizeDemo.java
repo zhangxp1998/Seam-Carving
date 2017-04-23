@@ -11,6 +11,7 @@
  *
  ******************************************************************************/
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
@@ -19,6 +20,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +30,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+
+import edu.princeton.cs.algs4.Stack;
 
 public class ResizeDemo
 {
@@ -107,7 +113,7 @@ class ImageFrame extends JFrame
 	{
 		sc = new DPSeamCarver(img);
 		setTitle("ImageTest");
-		ic = new ImageComponent(img);
+		ic = new ImageComponent(img, sc);
 
 		add(ic);
 		pack();
@@ -140,6 +146,7 @@ class ImageFrame extends JFrame
 						ori.insertHorizontalSeam(horizontalSeam);
 					}
 					sc = ori;
+					ic.sc = ori;
 				}
 
 				while (sc.width() > comp.getWidth())
@@ -159,6 +166,7 @@ class ImageFrame extends JFrame
 						ori.insertVerticalSeam(verticalSeam);
 					}
 					sc = ori;
+					ic.sc = ori;
 				}
 				// Set the new Image and repaint
 				comp.setImage(sc.getBufferedImage());
@@ -187,10 +195,36 @@ class ImageFrame extends JFrame
 						ImageFrame.this.pack();
 					} catch (IOException e1)
 					{
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+				} else if (e.getKeyCode() == KeyEvent.VK_R)
+				{
+					int n = 0;
+					Stack<Object> stack = new Stack<Object>();
+					while (sc.hasUnwantedPixels())
+					{
+						int[] verticalSeam = sc.findVerticalSeam();
+						stack.push(verticalSeam);
+						sc.removeVerticalSeam(verticalSeam);
+						n++;
+					}
+
+					SeamCarver ori = new DPSeamCarver(sc);
+					for (int i = 0; i < n; i++)
+					{
+						// avoid finding the same seam
+						int[] verticalSeam = (int[]) stack.pop();
+						sc.removeVerticalSeam(verticalSeam);
+						ori.insertVerticalSeam(verticalSeam);
+					}
+					sc = ori;
+					ic.sc = ori;
+
+					ic.setImage(sc.getBufferedImage());
+					ImageFrame.this.pack();
+					ic.repaint();
 				}
+				System.out.println(e.getKeyChar() + " : " + e.getKeyCode());
 			}
 
 		});
@@ -204,11 +238,38 @@ class ImageComponent extends JComponent
 	 */
 	private static final long serialVersionUID = 1L;
 	private Image image;
+	public SeamCarver sc;
+	private final int R = 20;
 
-	public ImageComponent(Image img)
+	public ImageComponent(Image img, SeamCarver sc)
 	{
+		this.sc = sc;
 		this.setSize(img.getWidth(null), img.getHeight(null));
 		this.setPreferredSize(new Dimension(img.getWidth(null), img.getHeight(null)));
+		addMouseMotionListener(new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseDragged(MouseEvent e)
+			{
+				Graphics g = ImageComponent.this.getGraphics();
+				g.setColor(new Color(255, 0, 0, 90));
+				g.fillOval(e.getX() - R / 2, e.getY() - R / 2, R, R);
+				ImageComponent.this.sc.reduceWeight(e.getX(), e.getY(), R);
+			}
+
+		});
+		addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				System.out.println("ImageComponent.ImageComponent(...).new MouseAdapter() {...}.mouseClicked()");
+				Graphics g = ImageComponent.this.getGraphics();
+				g.setColor(new Color(255, 0, 0, 127));
+				g.fillOval(e.getX(), e.getY(), 20, 20);
+				ImageComponent.this.sc.reduceWeight(e.getX(), e.getY(), R);
+			}
+		});
 		image = img;
 	}
 

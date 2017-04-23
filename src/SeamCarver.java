@@ -8,6 +8,7 @@ public abstract class SeamCarver
 	protected int height;
 	protected int width;
 	protected int[] rgb;
+	protected boolean[] remove;
 
 	public SeamCarver(BufferedImage pic)
 	{
@@ -17,6 +18,7 @@ public abstract class SeamCarver
 		width = pic.getWidth();
 
 		rgb = new int[pic.getHeight() * pic.getWidth() + 1];// +1
+		remove = new boolean[rgb.length];
 		pic.getRGB(0, 0, pic.getWidth(), pic.getHeight(), rgb, 0, pic.getWidth());
 	}
 
@@ -30,6 +32,7 @@ public abstract class SeamCarver
 		width = s.width;
 		height = s.height;
 		rgb = Arrays.copyOf(s.rgb, s.rgb.length);
+		remove = new boolean[rgb.length];
 	}
 
 	protected static void relax(int cur, int next, int[] dist, int[] from, int edgeWeight)
@@ -46,6 +49,11 @@ public abstract class SeamCarver
 	protected int rgb(int x, int y)
 	{
 		return rgb[y * width + x];
+	}
+
+	protected boolean remove(int x, int y)
+	{
+		return remove[y * width + x];
 	}
 
 	/**
@@ -182,7 +190,17 @@ public abstract class SeamCarver
 
 		int dx = getDelta(rgb(x - 1, y), rgb(x + 1, y));
 		int dy = getDelta(rgb(x, y - 1), rgb(x, y + 1));
-		return (int) Math.sqrt(dx + dy);
+
+		// if (remove[id(x, y)])
+		// {
+		// System.out.println("SeamCarver.energy()");
+		// return (int) Math.sqrt(dx + dy) - 1000;
+		// }
+		int energy = (int) Math.sqrt(dx + dy);
+		if (remove[id(x, y)])
+			return (energy >> 1) - 500;
+		else
+			return energy;
 	}
 
 	public abstract int[] findHorizontalSeam(); // sequence of indices for
@@ -209,10 +227,16 @@ public abstract class SeamCarver
 			// throw new IllegalArgumentException();
 
 			for (int y = 0; y < pivot; y++)
+			{
 				rgb[y * W + x] = rgb(x, y);
+				remove[y * W + x] = remove(x, y);
+			}
 
 			for (int y = pivot; y < H; y++)
+			{
 				rgb[y * W + x] = rgb(x, y + 1);
+				remove[y * W + x] = remove(x, y + 1);
+			}
 		}
 		width = W;
 		height = H;
@@ -235,10 +259,16 @@ public abstract class SeamCarver
 			// throw new IllegalArgumentException();
 
 			for (int x = 0; x < pivot; x++)
+			{
 				rgb[y * W + x] = rgb(x, y);
+				remove[y * W + x] = remove(x, y);
+			}
 
 			for (int x = pivot; x < W; x++)
+			{
 				rgb[y * W + x] = rgb(x + 1, y);
+				remove[y * W + x] = remove(x + 1, y);
+			}
 		}
 		width = W;
 		height = H;
@@ -378,5 +408,32 @@ public abstract class SeamCarver
 		rgb = tmp;
 		width = W;
 		height = H;
+	}
+
+	private static double dist(int x1, int y1, int x2, int y2)
+	{
+		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+	}
+
+	public boolean hasUnwantedPixels()
+	{
+		for (boolean b : remove)
+			if (b)
+				return true;
+		return false;
+	}
+
+	public void reduceWeight(int x, int y, int r)
+	{
+		for (int i = y - r / 2; i < y + r / 2; i++)
+		{
+			for (int j = x - r / 2; j < x + r / 2; j++)
+			{
+				if (isInBound(j, i) && dist(j, i, x, y) <= r)
+				{
+					remove[id(j, i)] = true;
+				}
+			}
+		}
 	}
 }

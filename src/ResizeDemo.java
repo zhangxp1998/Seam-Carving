@@ -31,8 +31,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import edu.princeton.cs.algs4.Stack;
-
 public class ResizeDemo
 {
 	public static void main(String[] args) throws IOException
@@ -200,11 +198,9 @@ class ImageFrame extends JFrame
 				} else if (e.getKeyCode() == KeyEvent.VK_R)
 				{
 					int n = 0;
-					Stack<Object> stack = new Stack<Object>();
 					while (sc.hasUnwantedPixels())
 					{
 						int[] verticalSeam = sc.findVerticalSeam();
-						stack.push(verticalSeam);
 						sc.removeVerticalSeam(verticalSeam);
 						n++;
 					}
@@ -213,7 +209,7 @@ class ImageFrame extends JFrame
 					for (int i = 0; i < n; i++)
 					{
 						// avoid finding the same seam
-						int[] verticalSeam = (int[]) stack.pop();
+						int[] verticalSeam = sc.findVerticalSeam();
 						sc.removeVerticalSeam(verticalSeam);
 						ori.insertVerticalSeam(verticalSeam);
 					}
